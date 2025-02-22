@@ -16,7 +16,7 @@ const Menu: React.FC = () => {
     <>
       <motion.button
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="fixed top-4 left-4 z-50 p-3 rounded-full cursor-pointer bg-slate-800/70 hover:bg-slate-700 transition-colors"
+        className="fixed top-4 left-4 z-50 p-3 rounded-full cursor-pointer  hover:bg-slate-700 transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -143,15 +143,15 @@ const TopGames: React.FC = () => {
             transition={{ type: "spring", stiffness: 200 }}
             className=" p-6 rounded-2xl"
           >
-            <img src="/game.svg" className="absolute top-[1.8%] left-[10.5%] w-9 h-9" alt="" />
-            <h2 className="text-2xl  absolute left-[14%] top-[1.8%] font-semibold ">
+            <img src="/game.svg" className="absolute top-[1.5%] left-[6.5%] w-9 h-9" alt="" />
+            <h2 className="text-2xl  absolute left-[10%] top-[1.5%]  ">
               Top Games Dashboard
             </h2>
-            <img src="/blackLOgo.svg" className="w-[50px] h-[50px] right-[2%] absolute top-[1.2%]" alt="" />
+            <img src="/blackLOgo.svg" className="w-9 h-9 right-[2%] absolute top-[1.5%]" alt="" />
           </motion.div>
         </div>
 
-        <div className="w-[95%] h-[1px] absolute bg-amber-500 top-[7%]"></div>
+        <div className="w-[98%] left-[10px] h-[1px] absolute bg-amber-500 top-[6%]"></div>
 
         {loading ? (
           <motion.div 

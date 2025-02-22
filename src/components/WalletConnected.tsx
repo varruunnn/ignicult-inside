@@ -147,7 +147,7 @@ const WalletConnected: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-black text-white p-8"
+      className="min-h-screen bg-[#1D1D1D] text-white p-8"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -173,20 +173,22 @@ const WalletConnected: React.FC = () => {
               variants={itemVariants}
             >
               <motion.div
-                className="inline-block w-[25vw] bg-slate-800/50 backdrop-blur-sm p-4  rounded-2xl"
+                className="inline-block  p-4  rounded-2xl"
                 whileHover={{ scale: 1.02 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <Wallet className="w-8 h-8 top-[28%] absolute" />
-                <h2 className="text-3xl ml-[50px] bg-gradient-to-r font-light from-gray-400 to-gray-300 bg-clip-text text-transparent flex items-center gap-3">
-                  
+                <h2 className="text-2xl ml-[-40px] absolute top-[3.6%] left-[10%]  flex items-center gap-3">
+                  <Wallet className="w-8 h-8" />
                   Wallets Connected
                 </h2>
+                <img src="/blackLOgo.svg" className="w-9 h-9 right-[2%] absolute top-[3.5%] " alt="" />
               </motion.div>
+
+            <div className="w-[98%] h-[1px] left-[1%] absolute bg-amber-500 top-[14%]"></div>
             </motion.div>
 
             <motion.div
-              className="bg-slate-800/30 backdrop-blur-sm rounded-3xl p-12 shadow-xl border border-slate-700/50"
+              className="bg-linear-to-r  from-[#520e0e] to-[#15514f] backdrop-blur-sm rounded-3xl p-12 shadow-xl"
               variants={pulseVariants}
               initial="initial"
               animate="animate"

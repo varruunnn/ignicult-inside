@@ -238,14 +238,14 @@ const MonthlyActivity: React.FC = () => {
       ) : data ? (
         <div className="max-w-7xl mx-auto space-y-12">
           <motion.div className="text-center relative left-[-27%] space-y-4" variants={cardVariants}>
-          <img src="/blackLOgo.svg" className="w-[50px] h-[50px] right-[-27%] absolute top-[-35%]" alt="" />
+          <img src="/blackLOgo.svg" className="w-9 h-9 right-[-27%] absolute top-[-23%]" alt="" />
             <motion.div
               className="inline-block relative backdrop-blur-sm p-6 rounded-2xl"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
               
-              <h2 className="text-2xl absolute top-[-22%] left-[-13vw] font-normal text-white whitespace-nowrap">
+              <h2 className="text-2xl absolute top-[-18%] left-[-13vw]  text-white whitespace-nowrap">
               <Calendar className="w-7 absolute left-[-12%] top-[7%] h-7" />
                 Monthly Activity Dashboard
               </h2>
@@ -344,7 +344,7 @@ const MonthlyActivity: React.FC = () => {
                   </h3>
                 </div>
                 <p className="text-3xl font-bold">
-                  <span className="bg-gradient-to-r  from-[#FF0000]  to-[#FFF600] text-transparent bg-clip-text">
+                  <span className="bg-linear-to-r  from-[#FF0000]  to-[#FFF600] text-transparent bg-clip-text">
                     {data.averageTimePerActivity}
                   </span>
                 </p>
@@ -366,7 +366,7 @@ const MonthlyActivity: React.FC = () => {
                 </div>
 
                 <p className="text-3xl font-bold">
-                  <span className="bg-gradient-to-r  from-[#FF0000]  to-[#FFF600] text-transparent bg-clip-text">
+                  <span className="bg-linear-to-r  from-[#FF0000]  to-[#FFF600] text-transparent bg-clip-text">
                     {displayedValues.uniquePlayers?.toFixed(0) || '0'}  
                   </span>
                 </p>
