@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
+  Gamepad2,
   ArrowUp,
   Activity,
   Award,
   Loader2,
   Menu as MenuIcon,
   X,
-  Calendar,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,26 +21,29 @@ interface Game {
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const menuItems = [
-    { label: "Home", path: "/" },
-    { label: "Top Games", path: "/topgames" },
-    { label: "Monthly Activity", path: "/monthly-activity" },
-    { label: "Wallet Connected", path: "/wallet-connected" },
+  const menuOptions = [
+    { path: '/topgames', text: 'Top Games' },
+    { path: '/monthly-activity', text: 'Monthly Activity' },
+    { path: '/wallet-connected', text: 'Wallet Connected' },
   ];
+
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
+  };
+
   return (
     <>
       <motion.button
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="fixed top-[2vw] left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
+        className="fixed top-[1.9vw] left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
-        {menuOpen ? (
-          <X className="w-6 h-6 text-white" />
-        ) : (
-          <MenuIcon className="w-6 h-6 text-white" />
-        )}
+        {menuOpen ? <X className="w-6 h-6 text-white" /> : <MenuIcon className="w-6 h-6 text-white" />}
       </motion.button>
+
       <AnimatePresence>
         {menuOpen && (
           <motion.nav
@@ -49,32 +52,40 @@ const Menu: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <ul className="space-y-6 text-2xl">
-              {menuItems.map((item) => (
-                <motion.li key={item.path} className="relative">
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-white opacity-0"
-                    whileHover={{ opacity: 1, scale: 1.8 }}
-                    transition={{ duration: 0.3 }}
-                  />
+            <motion.div {...fadeIn} className="flex flex-col items-center">
+              <motion.img src="/blackLOgo.svg" alt="Logo" className="w-[150px] h-[150px] relative left-[-1vw]" />
+            </motion.div>
+            <motion.div {...fadeIn} className="mt-8 flex md:flex-row flex-col gap-4">
+              {menuOptions.map((option, index) => (
+                <motion.div
+                  key={option.path}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <button
                     onClick={() => {
-                      navigate(item.path);
+                      navigate(option.path);
                       setMenuOpen(false);
                     }}
-                    className="relative cursor-pointer z-10 px-4 py-2"
+                    className="block px-6 py-3  border-[#FFB000] border-[0.5px] cursor-pointer bg-[#1D1D1D] rounded-xl transition-colors duration-300 hover:bg-gray-800 hover:text-black text-white no-underline"
                   >
-                    {item.label}
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF0000] to-[#FFF600]">
+                      {option.text}
+                    </span>
                   </button>
-                </motion.li>
+                </motion.div>
               ))}
-            </ul>
+            </motion.div>
           </motion.nav>
         )}
       </AnimatePresence>
     </>
   );
 };
+
 
 const TopGames: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
@@ -158,7 +169,8 @@ const TopGames: React.FC = () => {
               transition={{ type: "spring", stiffness: 400 }}
             >
               <h2 className="text-2xl text-white whitespace-nowrap relative top-[-2.2vw] left-[-6vw] ">
-                <Calendar className="w-7 inline mr-2 md:inline-block md:relative" />
+                <Gamepad2 
+                className="w-9 inline mr-2 md:inline-block md:relative" />
                 Top Games Dashboard
               </h2>
             </motion.div>

@@ -51,13 +51,17 @@ const CountUp: React.FC<CountUpProps> = ({ target, duration = 2000, format = (n)
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  const menuItems = [
-    { label: "Home", path: "/" },
-    { label: "Top Games", path: "/topgames" },
-    { label: "Monthly Activity", path: "/monthly-activity" },
-    { label: "Wallet Connected", path: "/wallet-connected" },
+  const menuOptions = [
+    { path: '/topgames', text: 'Top Games' },
+    { path: '/monthly-activity', text: 'Monthly Activity' },
+    { path: '/wallet-connected', text: 'Wallet Connected' },
   ];
+
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
+  };
 
   return (
     <>
@@ -67,12 +71,9 @@ const Menu: React.FC = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
-        {menuOpen ? (
-          <X className="w-6 h-6 text-white" />
-        ) : (
-          <MenuIcon className="w-6 h-6 text-white" />
-        )}
+        {menuOpen ? <X className="w-6 h-6 text-white" /> : <MenuIcon className="w-6 h-6 text-white" />}
       </motion.button>
+
       <AnimatePresence>
         {menuOpen && (
           <motion.nav
@@ -81,26 +82,33 @@ const Menu: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <ul className="space-y-6 text-2xl">
-              {menuItems.map((item) => (
-                <motion.li key={item.path} className="relative">
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-white opacity-0"
-                    whileHover={{ opacity: 1, scale: 1.8 }}
-                    transition={{ duration: 0.3 }}
-                  />
+            <motion.div {...fadeIn} className="flex flex-col items-center">
+              <motion.img src="/blackLOgo.svg" alt="Logo" className="w-[150px] h-[150px] relative left-[-1vw]" />
+            </motion.div>
+            <motion.div {...fadeIn} className="mt-8 flex md:flex-row flex-col gap-4">
+              {menuOptions.map((option, index) => (
+                <motion.div
+                  key={option.path}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <button
-                    className="relative cursor-pointer z-10 px-4 py-2"
                     onClick={() => {
-                      navigate(item.path);
+                      navigate(option.path);
                       setMenuOpen(false);
                     }}
+                    className="block px-6 py-3  border-[#FFB000] border-[0.5px] cursor-pointer bg-[#1D1D1D] rounded-xl transition-colors duration-300 hover:bg-gray-800 hover:text-black text-white no-underline"
                   >
-                    {item.label}
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF0000] to-[#FFF600]">
+                      {option.text}
+                    </span>
                   </button>
-                </motion.li>
+                </motion.div>
               ))}
-            </ul>
+            </motion.div>
           </motion.nav>
         )}
       </AnimatePresence>
@@ -334,11 +342,7 @@ const MonthlyActivity: React.FC = () => {
                     Total Time
                   </h3>
                 </div>
-                <p className="text-start text-6xl relative top-[-11.4vw]"
-                  style={{
-                    fontFamily: "Roboto",
-                    fontWeight: 700,
-                  }}
+                <p className="text-start text-6xl font-bold relative top-[-11.6vw]"
                 >
                   <span className="bg-gradient-to-br from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
                     <CountUp target={parseFloat(data.totalTime.split(" ")[0])} duration={2000} format={(n) => n.toFixed(2)} /></span>
@@ -360,7 +364,7 @@ const MonthlyActivity: React.FC = () => {
                 </div>
                 <h3 className="text-lg font-light text-slate-100">Activities per Player</h3>
               </div>
-              <p className="text-5xl mt-6 font-semibold">
+              <p className="text-5xl mt-6 font-bold">
                 <span className="bg-gradient-to-br from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
                   <CountUp target={data.numberOfActivitiesPerPlayer || 0} duration={2000} format={(n) => n.toFixed(2)} /></span>
               </p>
@@ -408,7 +412,7 @@ const MonthlyActivity: React.FC = () => {
               <p className="text-3xl text-left w-[95%] font-bold">
                 <span className="bg-gradient-to-br relative top-[1.3vw] text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
                   <CountUp target={parseFloat(data.averageTimeSpentPerPlayer)} duration={780} /></span>
-                  <p className="font-light  relative top-[-1.2vw] left-[2.5vw] text-xl">minutes</p>
+                <p className="font-light  relative top-[-1.2vw] left-[2.5vw] text-xl">minutes</p>
               </p>
 
             </motion.div>
