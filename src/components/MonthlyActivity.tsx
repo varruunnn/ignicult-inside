@@ -22,43 +22,25 @@ import {
 } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 
-interface CountUpProps {
-  target: number;
-  duration?: number;
-  format?: (n: number) => string;
+interface MonthlyActivityData {
+  totalTime: string;
+  averageTimePerActivity: string;
+  uniquePlayers: number;
+  numberOfActivities: number;
+  numberOfActivitiesPerPlayer: number;
+  averageTimeSpentPerPlayer: string;
+  dailyBreakdown: { date: string; totalMinutes: string; totalActivities: number }[];
 }
-const CountUp: React.FC<CountUpProps> = ({ target, duration = 2000, format = (n) => n.toFixed(0) }) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let start = 0;
-    const steps = 60;
-    const increment = target / steps;
-    const interval = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        start = target;
-        clearInterval(interval);
-      }
-      setCount(start);
-    }, duration / steps);
-    return () => clearInterval(interval);
-  }, [target, duration]);
-
-  return <span>{format(count)}</span>;
-};
 
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-
   const menuItems = [
     { label: "Home", path: "/" },
     { label: "Top Games", path: "/topgames" },
     { label: "Monthly Activity", path: "/monthly-activity" },
     { label: "Wallet Connected", path: "/wallet-connected" },
   ];
-
   return (
     <>
       <motion.button
@@ -108,22 +90,6 @@ const Menu: React.FC = () => {
   );
 };
 
-interface DailyBreakdown {
-  date: string;
-  totalMinutes: string;
-  totalActivities: number;
-}
-
-interface MonthlyActivityData {
-  totalTime: string;
-  averageTimePerActivity: string;
-  uniquePlayers: number;
-  numberOfActivities: number;
-  numberOfActivitiesPerPlayer: number;
-  averageTimeSpentPerPlayer: string;
-  dailyBreakdown: DailyBreakdown[];
-}
-
 const MonthlyActivity: React.FC = () => {
   const [data, setData] = useState<MonthlyActivityData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -162,11 +128,7 @@ const MonthlyActivity: React.FC = () => {
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 100 },
-    },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
   };
 
   const chartVariants = {
@@ -178,10 +140,6 @@ const MonthlyActivity: React.FC = () => {
     switch (title) {
       case "Total Time":
         return <Clock className="w-6 h-6" />;
-      case "Unique Players":
-        return <Users className="w-6 h-6" />;
-      case "Number of Activities":
-        return <Activity className="w-6 h-6" />;
       case "Avg Time per Activity":
         return <BarChart2 className="w-6 h-6" />;
       case "Avg Time per Player":
@@ -209,7 +167,7 @@ const MonthlyActivity: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-[#1D1D1D] text-white p-8 overflow-x-hidden w-full"
+      className="min-h-screen bg-[#1D1D1D] text-white p-8 w-full relative overflow-x-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -217,7 +175,7 @@ const MonthlyActivity: React.FC = () => {
       <Menu />
       {loading ? (
         <motion.div
-          className="flex flex-col items-center justify-center h-96"
+          className="flex flex-col items-center justify-center h-screen"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
@@ -231,40 +189,40 @@ const MonthlyActivity: React.FC = () => {
         </motion.div>
       ) : data ? (
         <div className="max-w-7xl mx-auto space-y-12">
-          <motion.div className="text-center relative left-[-27%] space-y-4" variants={cardVariants}>
-            <img src="/blackLOgo.svg" className="w-9 h-9 right-[-27%] absolute top-[-23%]" alt="" />
+          {/* Header Section */}
+          <motion.div className="text-center space-y-4 md:relative" variants={cardVariants}>
+            <img src="/blackLOgo.svg" className="w-9 h-9 mx-auto md:absolute md:right-0 md:top-[-23%]" alt="Logo" />
             <motion.div
               className="inline-block relative backdrop-blur-sm p-6 rounded-2xl"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-
-              <h2 className="text-2xl absolute top-[-18%] left-[-13vw]  text-white whitespace-nowrap">
-                <Calendar className="w-7 absolute left-[-12%] top-[7%] h-7" />
+              <h2 className="text-2xl text-white whitespace-nowrap md:absolute md:top-[-18%] md:left-[-13vw]">
+                <Calendar className="w-7 inline mr-2" />
                 Monthly Activity Dashboard
               </h2>
-
             </motion.div>
           </motion.div>
-          <div className="w-[98%] h-[1px] left-[1%] absolute bg-amber-500 top-[14%]"></div>
-          <div className="flex justify-center items-center space-x-4 mb-6">
+          <div className="w-full h-[1px] bg-amber-500 my-4 md:my-0"></div>
+          {/* Selectors */}
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-6">
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="bg-[#404040] text-white rounded-4xl w-[13vw] absolute left-[5%] p-2 text-sm"
+              className="bg-[#404040] text-white rounded-full w-[13vw] p-2 text-sm"
             >
               {months.map((month) =>
-                (selectedYear === "2024" && parseInt(month.value) < 8)
-                  ? null
-                  : <option key={month.value} value={month.value}>
+                selectedYear === "2024" && parseInt(month.value) < 8 ? null : (
+                  <option key={month.value} value={month.value}>
                     {month.name}
                   </option>
+                )
               )}
             </select>
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="bg-[#404040] text-white rounded-4xl w-[10vw] absolute left-[20%] p-2 text-sm"
+              className="bg-[#404040] text-white rounded-full w-[10vw] p-2 text-sm"
             >
               {years.map((year) => (
                 <option key={year} value={year}>
@@ -273,7 +231,8 @@ const MonthlyActivity: React.FC = () => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row gap-6 h-[300px] mt-17">
+          {/* Graph and Adjacent Card Container */}
+          <div className="flex flex-col md:flex-row gap-6 h-[300px] mt-6">
             <motion.div
               variants={chartVariants}
               className="bg-gradient-to-tr from-[#284229] to-[#549c02d0] backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 w-full md:w-[70%] h-full"
@@ -318,7 +277,7 @@ const MonthlyActivity: React.FC = () => {
                 </LineChart>
               </ResponsiveContainer>
             </motion.div>
-            {/* Adjacent Card for Total Time (30% width on md+) */}
+            {/* Adjacent Card for Total Time */}
             <div className="flex flex-col gap-6 w-full md:w-[30%] h-full">
               <motion.div
                 variants={cardVariants}
@@ -330,114 +289,45 @@ const MonthlyActivity: React.FC = () => {
                   backgroundPosition: 'center',
                 }}
               >
-                <div className="flex flex-col items-start relative top-[3vw] h-full gap-3">
-                  <h3 className="text-4xl font-light text-slate-100">
-                    Total Time
-                  </h3>
+                <div className="flex flex-col items-start h-full gap-3">
+                  <h3 className="text-4xl font-light text-slate-100">Total Time</h3>
                 </div>
-                <p className=" text-start text-5xl font-semibold relative top-[-12.4vw] ">
-                  <span className="bg-gradient-to-br from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                    <CountUp target={parseFloat(data.totalTime.split(" ")[0])} duration={2000} format={(n) => n.toFixed(2)} /></span>
+                <p className="mt-4 text-center text-xl font-bold">
+                  <CountUp target={parseFloat(data.totalTime.split(" ")[0])} duration={2000} format={(n) => n.toFixed(2)} /> hours
                 </p>
-                <p className="relative top-[-12vw] text-3xl left-[2%] font-light">hours</p>
               </motion.div>
-
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <motion.div
-              variants={cardVariants}
-              className="bg-gradient-to-t from-[#0b8d0f] via-[#284229] to-[#052406] w-full backdrop-blur-sm rounded-xl p-6 h-40 flex flex-col justify-center"
-              whileHover={{ y: -5 }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="rounded-lg">
-                  {getIcon('Activities per Player')}
-                </div>
-                <h3 className="text-lg font-light text-slate-100">Activities per Player</h3>
-              </div>
-              <p className="text-5xl font-semibold">
-              <span className="bg-gradient-to-br from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.numberOfActivitiesPerPlayer || 0} duration={2000} format={(n) => n.toFixed(2)} /></span>
-              </p>
-            </motion.div>
-            <motion.div
-              variants={cardVariants}
-              className="flex flex-col items-center justify-center w-full backdrop-blur-sm rounded-xl p-6 h-40"
-              whileHover={{ y: -5 }}
-              style={{
-                backgroundImage: 'url(/bg3.svg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <div className=" p-2 rounded-lg">
-                  {getIcon("Avg Time per Activity")}
-                </div>
-                <h3 className="text-lg font-light text-slate-100">Avg time per activity</h3>
-              </div>
-              <p className="text-3xl font-bold">
-                <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={parseFloat(data.averageTimePerActivity.split(" ")[0]) || 0} duration={2000} format={(n) => n.toFixed(2)} />
-                  {/* {data.averageTimePerActivity.split(" ")[0]} */}
-                </span>
-                <p className="font-light text-xl">minutes</p>
-              </p>
-            </motion.div>
-            <motion.div
-              variants={cardVariants}
-              className="flex flex-col items-center justify-center w-full backdrop-blur-sm rounded-xl p-6 h-40"
-              whileHover={{ y: -5 }}
-              style={{
-                backgroundImage: 'url(/bg4.svg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <div className=" p-2 rounded-lg">
-                  {getIcon("Number of Activities")}
-                </div>
-                <h3 className="text-lg font-light text-slate-100">Number of Activities</h3>
-              </div>
-              <p className="text-3xl font-bold">
-              <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.numberOfActivities} duration={2000} /></span>
-              </p>
-            </motion.div>
-          </div>
+          {/* Bottom Grid: Two Cards for Avg Time per Activity and Avg Time per Player */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <motion.div
               variants={cardVariants}
-              className="bg-[url('/bg3.svg')] bg-cover bg-center backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 h-40 flex flex-col justify-center"
+              className="flex flex-col items-center justify-center w-full backdrop-blur-sm rounded-xl p-6 h-40"
               whileHover={{ y: -5 }}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg">
-                  {getIcon("Unique Players")}
+                <div className="bg-slate-700 p-2 rounded-lg">
+                  {getIcon("Avg Time per Activity")}
                 </div>
-                <h3 className="text-lg font-light text-slate-100">Unique Players</h3>
+                <h3 className="text-lg font-light text-slate-100">Avg Time per Activity</h3>
               </div>
-              <p className="text-3xl font-bold text-white">
-              <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.uniquePlayers} duration={2000} /></span>
+              <p className="text-3xl font-bold">
+                <CountUp target={parseFloat(data.averageTimePerActivity.split(" ")[0])} duration={2000} format={(n) => n.toFixed(2)} /> <span>minutes</span>
               </p>
             </motion.div>
             <motion.div
               variants={cardVariants}
-              className="bg-[url('/bg4.svg')] bg-cover bg-center backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 h-40 flex flex-col justify-center"
+              className="flex flex-col items-center justify-center w-full backdrop-blur-sm rounded-xl p-6 h-40"
               whileHover={{ y: -5 }}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg">
-                  {getIcon("Number of Activities")}
+                <div className="bg-slate-700 p-2 rounded-lg">
+                  {getIcon("Avg Time per Player")}
                 </div>
-                <h3 className="text-lg font-light text-slate-100">Number of Activities</h3>
+                <h3 className="text-lg font-light text-slate-100">Avg Time per Player</h3>
               </div>
-              <p className="text-3xl font-bold text-white">
-              <span className="bg-gradient-to-br from-[#92FF00] text-5xl to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.numberOfActivities} duration={2000} /></span>
+              <p className="text-3xl font-bold">
+                <CountUp target={parseFloat(data.averageTimeSpentPerPlayer.split(" ")[0])} duration={2000} format={(n) => n.toFixed(2)} /> <span>minutes</span>
               </p>
             </motion.div>
           </div>

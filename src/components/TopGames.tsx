@@ -7,20 +7,26 @@ import {
   Loader2,
   Menu as MenuIcon,
   X,
+  Calendar,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+interface Game {
+  gameId: number;
+  title: string;
+  completionRate: number;
+  predictedScore: number;
+}
 
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-
   const menuItems = [
     { label: "Home", path: "/" },
     { label: "Top Games", path: "/topgames" },
     { label: "Monthly Activity", path: "/monthly-activity" },
     { label: "Wallet Connected", path: "/wallet-connected" },
   ];
-
   return (
     <>
       <motion.button
@@ -70,13 +76,6 @@ const Menu: React.FC = () => {
   );
 };
 
-interface Game {
-  gameId: number;
-  title: string;
-  completionRate: number;
-  predictedScore: number;
-}
-
 const TopGames: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,23 +96,18 @@ const TopGames: React.FC = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
+    visible: { 
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
+      transition: { staggerChildren: 0.15 },
     },
   };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
+    visible: { 
+      opacity: 1, 
       y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.5, ease: "easeOut" },
     },
   };
 
@@ -128,21 +122,18 @@ const TopGames: React.FC = () => {
   const loadingVariants = {
     animate: {
       rotate: 360,
-      transition: {
-        duration: 1.5,
-        repeat: Infinity,
-        ease: "linear",
-      },
+      transition: { duration: 1.5, repeat: Infinity, ease: "linear" },
     },
   };
 
   return (
     <motion.div
-      className="min-h-screen bg-[#1D1D1D] text-white p-8 relative"
+      className="min-h-screen bg-[#1D1D1D] text-white p-8 relative overflow-x-hidden w-full"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
+      <Menu />
       {loading ? (
         <motion.div
           className="flex flex-col items-center justify-center h-screen"
@@ -156,22 +147,25 @@ const TopGames: React.FC = () => {
         </motion.div>
       ) : (
         <div className="max-w-7xl mx-auto space-y-12 relative">
-          <Menu />
-          <motion.div className="flex items-center justify-between mb-12" variants={cardVariants}>
+          {/* Header Section */}
+          <motion.div 
+            className="text-center space-y-4 md:relative md:left-[-27%]" 
+            variants={cardVariants}
+          >
+            <img src="/blackLOgo.svg" className="w-9 h-9 mx-auto md:absolute md:right-[-27%] md:top-[-23%]" alt="Logo" />
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="p-6 rounded-2xl relative w-full h-full flex items-center"
+              className="inline-block relative backdrop-blur-sm p-6 rounded-2xl"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 400 }}
             >
-              <img src="/game.svg" className="w-9 top-[-11%] left-[4%] absolute h-9" alt="Game Icon" />
-              <h2 className="text-2xl ml-2 relative top-[-2.7vw] left-[5%]">Top Games Dashboard</h2>
-              <img src="/blackLOgo.svg" className="w-9 h-9 ml-auto relative top-[-2.2vw]" alt="Black Logo" />
+              <h2 className="text-2xl text-white whitespace-nowrap md:absolute md:top-[-18%] md:left-[-13vw]">
+                <Calendar className="w-7 inline mr-2 md:inline-block md:relative" />
+                Top Games Dashboard
+              </h2>
             </motion.div>
           </motion.div>
-
-          <div className="w-[100%] h-[1px] absolute bg-amber-500 top-[4.5%] left-[-10px]"></div>
-
+          <div className="w-full h-[1px] bg-amber-500 my-4 md:absolute md:top-[4.5%] md:left-[-10px]"></div>
+          {/* Games Grid */}
           <AnimatePresence>
             {games.length > 0 && (
               <div className="grid gap-8 grid-cols-1 mt-[-20px] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -199,7 +193,10 @@ const TopGames: React.FC = () => {
                       />
                     </div>
                     <div className="p-6">
-                      <motion.h3 className="text-xl font-semibold mb-4 flex items-center gap-2" layout>
+                      <motion.h3 
+                        className="text-xl font-semibold mb-4 flex items-center gap-2"
+                        layout
+                      >
                         <Award className="w-5 h-5 text-slate-300" />
                         {game.title}
                       </motion.h3>
