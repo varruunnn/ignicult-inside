@@ -318,11 +318,10 @@ const MonthlyActivity: React.FC = () => {
                 </LineChart>
               </ResponsiveContainer>
             </motion.div>
-            {/* Adjacent Card for Total Time (30% width on md+) */}
-            <div className="flex flex-col gap-6 max-[468px]:hidden w-full md:w-[30%] h-full">
+            <div className="flex flex-col gap-6 max-[468px]:hidden  w-[30%] h-full">
               <motion.div
                 variants={cardVariants}
-                className="bg-gradient-to-tr from-[#023a10] to-[#1d745b] backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 flex-1"
+                className="bg-gradient-to-tr from-[#023a10] to-[#1d745b]  backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 flex-1"
                 whileHover={{ y: -5 }}
                 style={{
                   backgroundImage: 'url("/bg0.svg")',
@@ -331,15 +330,20 @@ const MonthlyActivity: React.FC = () => {
                 }}
               >
                 <div className="flex flex-col items-start relative top-[3vw] h-full gap-3">
-                  <h3 className="text-4xl font-light text-slate-100">
+                  <h3 className="text-3xl font-light relative top-[2vw] text-slate-100">
                     Total Time
                   </h3>
                 </div>
-                <p className=" text-start text-5xl font-semibold relative top-[-12.4vw] ">
+                <p className="text-start text-6xl relative top-[-11.4vw]"
+                  style={{
+                    fontFamily: "Roboto",
+                    fontWeight: 700,
+                  }}
+                >
                   <span className="bg-gradient-to-br from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
                     <CountUp target={parseFloat(data.totalTime.split(" ")[0])} duration={2000} format={(n) => n.toFixed(2)} /></span>
                 </p>
-                <p className="relative top-[-12vw] text-3xl left-[2%] font-light">hours</p>
+                <p className="relative top-[-11.7vw] text-3xl left-[2%] font-light">hours</p>
               </motion.div>
 
             </div>
@@ -356,9 +360,9 @@ const MonthlyActivity: React.FC = () => {
                 </div>
                 <h3 className="text-lg font-light text-slate-100">Activities per Player</h3>
               </div>
-              <p className="text-5xl font-semibold">
-              <span className="bg-gradient-to-br from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.numberOfActivitiesPerPlayer || 0} duration={2000} format={(n) => n.toFixed(2)} /></span>
+              <p className="text-5xl mt-6 font-semibold">
+                <span className="bg-gradient-to-br from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
+                  <CountUp target={data.numberOfActivitiesPerPlayer || 0} duration={2000} format={(n) => n.toFixed(2)} /></span>
               </p>
             </motion.div>
             <motion.div
@@ -371,18 +375,18 @@ const MonthlyActivity: React.FC = () => {
                 backgroundPosition: 'center',
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-start w-full gap-3">
                 <div className=" p-2 rounded-lg">
                   {getIcon("Avg Time per Activity")}
                 </div>
-                <h3 className="text-lg font-light text-slate-100">Avg time per activity</h3>
+                <h3 className="text-lg font-light relative top-[0.5vw] text-slate-100">Avg time per activity</h3>
               </div>
-              <p className="text-3xl font-bold">
-                <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={parseFloat(data.averageTimePerActivity.split(" ")[0]) || 0} duration={2000} format={(n) => n.toFixed(2)} />
+              <p className="text-3xl text-left w-full font-bold">
+                <span className="bg-gradient-to-br text-5xl relative left-[0.7vw] top-[1.5vw] from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
+                  <CountUp target={parseFloat(data.averageTimePerActivity.split(" ")[0]) || 0} duration={2000} format={(n) => n.toFixed(2)} />
                   {/* {data.averageTimePerActivity.split(" ")[0]} */}
                 </span>
-                <p className="font-light text-xl">minutes</p>
+                <p className="font-light relative top-[-0.8vw] left-[9vw] text-xl">minutes</p>
               </p>
             </motion.div>
             <motion.div
@@ -395,16 +399,18 @@ const MonthlyActivity: React.FC = () => {
                 backgroundPosition: 'center',
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-start relative top-[-0vw] w-full gap-3">
                 <div className=" p-2 rounded-lg">
                   {getIcon("Number of Activities")}
                 </div>
-                <h3 className="text-lg font-light text-slate-100">Number of Activities</h3>
+                <h3 className="text-lg font-light relative top-[0.2vw] text-slate-100">Average Time Per Player</h3>
               </div>
-              <p className="text-3xl font-bold">
-              <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.numberOfActivities} duration={2000} /></span>
+              <p className="text-3xl text-left w-[95%] font-bold">
+                <span className="bg-gradient-to-br relative top-[1.3vw] text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
+                  <CountUp target={parseFloat(data.averageTimeSpentPerPlayer)} duration={780} /></span>
+                  <p className="font-light  relative top-[-1.2vw] left-[2.5vw] text-xl">minutes</p>
               </p>
+
             </motion.div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -420,8 +426,8 @@ const MonthlyActivity: React.FC = () => {
                 <h3 className="text-lg font-light text-slate-100">Unique Players</h3>
               </div>
               <p className="text-3xl font-bold text-white">
-              <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.uniquePlayers} duration={2000} /></span>
+                <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
+                  <CountUp target={data.uniquePlayers} duration={2000} /></span>
               </p>
             </motion.div>
             <motion.div
@@ -436,8 +442,8 @@ const MonthlyActivity: React.FC = () => {
                 <h3 className="text-lg font-light text-slate-100">Number of Activities</h3>
               </div>
               <p className="text-3xl font-bold text-white">
-              <span className="bg-gradient-to-br from-[#92FF00] text-5xl to-[#7aee15] text-transparent bg-clip-text">
-                <CountUp target={data.numberOfActivities} duration={2000} /></span>
+                <span className="bg-gradient-to-br from-[#92FF00] text-5xl to-[#7aee15] text-transparent bg-clip-text">
+                  <CountUp target={data.numberOfActivities} duration={2000} /></span>
               </p>
             </motion.div>
           </div>

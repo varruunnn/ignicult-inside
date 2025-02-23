@@ -31,7 +31,7 @@ const Menu: React.FC = () => {
     <>
       <motion.button
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="fixed top-4 left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
+        className="fixed top-[2vw] left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -147,25 +147,23 @@ const TopGames: React.FC = () => {
         </motion.div>
       ) : (
         <div className="max-w-7xl mx-auto space-y-12 relative">
-          {/* Header Section */}
           <motion.div 
             className="text-center space-y-4 md:relative md:left-[-27%]" 
             variants={cardVariants}
           >
-            <img src="/blackLOgo.svg" className="w-9 h-9 mx-auto md:absolute md:right-[-27%] md:top-[-23%]" alt="Logo" />
+            <img src="/blackLOgo.svg" className="w-9 h-9 mx-auto absolute right-[-27%] top-[-7%]" alt="Logo" />
             <motion.div
               className="inline-block relative backdrop-blur-sm p-6 rounded-2xl"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <h2 className="text-2xl text-white whitespace-nowrap md:absolute md:top-[-18%] md:left-[-13vw]">
+              <h2 className="text-2xl text-white whitespace-nowrap relative top-[-2.2vw] left-[-6vw] ">
                 <Calendar className="w-7 inline mr-2 md:inline-block md:relative" />
                 Top Games Dashboard
               </h2>
             </motion.div>
           </motion.div>
-          <div className="w-full h-[1px] bg-amber-500 my-4 md:absolute md:top-[4.5%] md:left-[-10px]"></div>
-          {/* Games Grid */}
+          <div className="w-full h-[1px] bg-amber-500 my-4 absolute top-[2.7%] left-[-10px]"></div>
           <AnimatePresence>
             {games.length > 0 && (
               <div className="grid gap-8 grid-cols-1 mt-[-20px] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -175,7 +173,7 @@ const TopGames: React.FC = () => {
                     variants={cardVariants}
                     onHoverStart={() => setHoveredCard(game.gameId)}
                     onHoverEnd={() => setHoveredCard(null)}
-                    className="bg-slate-800/50 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-slate-700/50"
+                    className="bg-[#2b2b2b] backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-slate-700/50"
                     whileHover={{ y: -5, transition: { duration: 0.2 } }}
                   >
                     <div className="relative h-48 w-full overflow-hidden">
@@ -211,7 +209,7 @@ const TopGames: React.FC = () => {
                               {(game.completionRate * 100).toFixed(0)}%
                             </span>
                           </div>
-                          <div className="bg-slate-700/50 rounded-full h-2 overflow-hidden">
+                          <div className="bg-slate-600 rounded-full h-2 overflow-hidden">
                             <motion.div
                               className="bg-gradient-to-r from-[#1FFF5B] to-[#FFF600] h-full rounded-full"
                               custom={game.completionRate}
@@ -231,7 +229,7 @@ const TopGames: React.FC = () => {
                               {(game.predictedScore * 100).toFixed(0)}%
                             </span>
                           </div>
-                          <div className="bg-slate-700/50 rounded-full h-2 overflow-hidden">
+                          <div className="bg-slate-600 rounded-full h-2 overflow-hidden">
                             <motion.div
                               className="bg-gradient-to-r from-[#1FFF5B] to-[#FFF600] h-full rounded-full"
                               custom={game.predictedScore}
