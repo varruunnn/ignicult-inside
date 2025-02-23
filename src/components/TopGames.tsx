@@ -37,7 +37,7 @@ const Menu: React.FC = () => {
     <>
       <motion.button
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="fixed top-[1.9vw] left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
+        className="fixed top-15 left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -47,15 +47,15 @@ const Menu: React.FC = () => {
       <AnimatePresence>
         {menuOpen && (
           <motion.nav
-            className="fixed inset-0 bg-black bg-opacity-90 z-40 flex flex-col items-center justify-center"
+            className="fixed inset-0 bg-black bg-opacity-90 z-40 flex flex-col items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div {...fadeIn} className="flex flex-col items-center">
-              <motion.img src="/blackLOgo.svg" alt="Logo" className="w-[150px] h-[150px] relative left-[-1vw]" />
+              <img src="/blackLOgo.svg" alt="Logo" className="w-24 h-24" />
             </motion.div>
-            <motion.div {...fadeIn} className="mt-8 flex md:flex-row flex-col gap-4">
+            <motion.div {...fadeIn} className="mt-8 flex flex-col md:flex-row gap-4">
               {menuOptions.map((option, index) => (
                 <motion.div
                   key={option.path}
@@ -70,7 +70,7 @@ const Menu: React.FC = () => {
                       navigate(option.path);
                       setMenuOpen(false);
                     }}
-                    className="block px-6 py-3  border-[#FFB000] border-[0.5px] cursor-pointer bg-[#1D1D1D] rounded-xl transition-colors duration-300 hover:bg-gray-800 hover:text-black text-white no-underline"
+                    className="block px-6 py-3  border-[#FFB000] border-[0.5px] cursor-pointer bg-[#1D1D1D] rounded-xl transition-colors duration-300 hover:bg-gray-800 hover:text-black text-white"
                   >
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF0000] to-[#FFF600]">
                       {option.text}
@@ -82,8 +82,7 @@ const Menu: React.FC = () => {
           </motion.nav>
         )}
       </AnimatePresence>
-    </>
-  );
+    </>);
 };
 
 
@@ -107,7 +106,7 @@ const TopGames: React.FC = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { staggerChildren: 0.15 },
     },
@@ -115,8 +114,8 @@ const TopGames: React.FC = () => {
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5, ease: "easeOut" },
     },
@@ -157,28 +156,20 @@ const TopGames: React.FC = () => {
           <p className="mt-4 text-slate-400">Loading games data...</p>
         </motion.div>
       ) : (
-        <div className="max-w-7xl mx-auto space-y-12 relative">
-          <motion.div 
-            className="text-center space-y-4 md:relative md:left-[-27%]" 
-            variants={cardVariants}
-          >
-            <img src="/blackLOgo.svg" className="w-9 h-9 mx-auto absolute right-[-27%] top-[-7%]" alt="Logo" />
-            <motion.div
-              className="inline-block relative backdrop-blur-sm p-6 rounded-2xl"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
-              <h2 className="text-2xl text-white whitespace-nowrap relative top-[-2.2vw] left-[-6vw] ">
-                <Gamepad2 
-                className="w-9 inline mr-2 md:inline-block md:relative" />
+        <>
+          <header className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between px-4 py-4">
+            <div className="flex items-center relative left-[2vw] gap-2">
+              <Gamepad2 className="w-9 h-9" />
+              <h2 className="text-xl sm:text-2xl text-white whitespace-nowrap">
                 Top Games Dashboard
               </h2>
-            </motion.div>
-          </motion.div>
-          <div className="w-full h-[1px] bg-amber-500 my-4 absolute top-[2.7%] left-[-10px]"></div>
+            </div>
+            <img src="/blackLOgo.svg" alt="Logo" className="w-12 sm:w-16 h-auto" />
+          </header>
+          <div className="w-full h-px bg-amber-500"></div>
           <AnimatePresence>
             {games.length > 0 && (
-              <div className="grid gap-8 grid-cols-1 mt-[-20px] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid gap-8 grid-cols-1 mt-[20px] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {games.map((game) => (
                   <motion.div
                     key={game.gameId}
@@ -203,7 +194,7 @@ const TopGames: React.FC = () => {
                       />
                     </div>
                     <div className="p-6">
-                      <motion.h3 
+                      <motion.h3
                         className="text-xl font-semibold mb-4 flex items-center gap-2"
                         layout
                       >
@@ -258,7 +249,7 @@ const TopGames: React.FC = () => {
               </div>
             )}
           </AnimatePresence>
-        </div>
+        </>
       )}
     </motion.div>
   );

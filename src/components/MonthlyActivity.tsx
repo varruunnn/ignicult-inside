@@ -71,7 +71,7 @@ const Menu: React.FC = () => {
     <>
       <motion.button
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="fixed top-[2.9vw] left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
+        className="fixed top-12 left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -116,8 +116,7 @@ const Menu: React.FC = () => {
           </motion.nav>
         )}
       </AnimatePresence>
-    </>
-  );
+    </>);
 };
 
 interface DailyBreakdown {
@@ -221,7 +220,7 @@ const MonthlyActivity: React.FC = () => {
       animate="visible"
       variants={containerVariants}
     >
-      <Menu />
+
       {loading ? (
         <motion.div className="flex flex-col items-center justify-center h-96" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}>
@@ -230,17 +229,18 @@ const MonthlyActivity: React.FC = () => {
           <p className="mt-4 text-slate-400">Loading activity data...</p>
         </motion.div>
       ) : data ? (
-        <div className="max-w-7xl mx-auto w-full space-y-12">
-          <div className="text-left w-full space-y-4 mb-6">
-            <img src="/blackLOgo.svg" className="w-16 right-[-43vw] relative h-16 mx-auto" alt="Logo" />
-            <h2 className="text-3xl font-light flex items-start w-full relative top-[-5.5vw] left-[3.5vw] justify-start gap-2">
-              <Calendar className="w-7 relative top-[0.4vw] h-7" />
+        <div className="relative">
+          <Menu />
+          <header className="flex items-center justify-between px-4 py-2 pl-20">
+            <h2 className="text-2xl font-light flex items-center gap-2">
+              <Calendar className="w-7 h-7" />
               Monthly Activity Dashboard
             </h2>
-          </div>
-          <div className="w-full h-px bg-amber-500 "></div>
+            <img src="/blackLOgo.svg" alt="Logo" className="w-16 h-16" />
+          </header>
+          <div className="w-full h-px bg-amber-500"></div>
 
-          <div className="flex flex-col sm:flex-row items-start w-[100%] justify-start gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-start mt-[20px] w-[100%] justify-start gap-4 mb-6">
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
@@ -419,8 +419,10 @@ const MonthlyActivity: React.FC = () => {
         <motion.div className="text-center text-xl text-red-400" variants={cardVariants}>
           Error fetching activity data
         </motion.div>
-      )}
-    </motion.div>
+      )
+      }
+    </motion.div >
+
   );
 };
 
