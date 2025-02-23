@@ -188,7 +188,7 @@ const WalletConnected: React.FC = () => {
             </motion.div>
 
             <motion.div
-              className="bg-linear-to-r  from-[#520e0e] to-[#15514f] backdrop-blur-sm rounded-3xl p-12 shadow-xl"
+              className="bg-[url('/walletss.svg')] bg-cover bg-center backdrop-blur-sm rounded-3xl p-12 shadow-xl"
               variants={pulseVariants}
               initial="initial"
               animate="animate"
@@ -205,7 +205,7 @@ const WalletConnected: React.FC = () => {
                     <h3 className="text-xl text-slate-300">Total Wallets</h3>
                   </div>
                   <motion.div
-                    className="text-7xl font-bold bg-gradient-to-r  from-gray-400 to-gray-300 bg-clip-text text-transparent"
+                    className="text-7xl font-bold bg-gradient-to-r  from-[#1FFF5B] to-[#FFF600] bg-clip-text text-transparent"
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", stiffness: 100 }}
@@ -229,10 +229,10 @@ const WalletConnected: React.FC = () => {
                       ease: "linear"
                     }}
                   >
-                    {[...Array(8)].map((_, i) => (
+                    {[...Array(110)].map((_, i) => (
                       <motion.div
                         key={i}
-                        className="absolute w-3 h-3 bg-blue-400 rounded-full"
+                        className="absolute w-3 h-3 bg-[#10E510] rounded-full"
                         style={{
                           top: `${Math.sin(i * (Math.PI / 4)) * 60 + 60}px`,
                           left: `${Math.cos(i * (Math.PI / 4)) * 60 + 60}px`,

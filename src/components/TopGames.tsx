@@ -216,7 +216,7 @@ const TopGames: React.FC = () => {
                           </div>
                           <div className="bg-slate-700/50 rounded-full h-2 overflow-hidden">
                             <motion.div
-                              className="bg-gradient-to-r from-[#FF0000] to-[#FFF600] h-full rounded-full"
+                              className="bg-gradient-to-r from-[#1FFF5B] to-[#FFF600] h-full rounded-full"
                               custom={game.completionRate}
                               variants={progressVariants}
                               initial="hidden"
@@ -236,7 +236,7 @@ const TopGames: React.FC = () => {
                           </div>
                           <div className="bg-slate-700/50 rounded-full h-2 overflow-hidden">
                             <motion.div
-                              className="bg-gradient-to-r from-[#FF0000] to-[#FFF600] h-full rounded-full"
+                              className="bg-gradient-to-r from-[#1FFF5B] to-[#FFF600] h-full rounded-full"
                               custom={game.predictedScore}
                               variants={progressVariants}
                               initial="hidden"
