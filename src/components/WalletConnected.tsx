@@ -6,8 +6,6 @@ import { Wallet, Menu as MenuIcon, X, ChevronUp, Loader2 } from 'lucide-react';
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  // Use the three options from your landing page Show Data section
   const menuOptions = [
     { path: '/topgames', text: 'Top Games' },
     { path: '/monthly-activity', text: 'Monthly Activity' },
@@ -77,15 +75,23 @@ interface WalletData {
   count: number;
 }
 
-const Spinner: React.FC = () => {
+const Spinner = () => {
   return (
-    <motion.div
-      className="w-32 h-32 border-[14px] relative top-[2vw] right-[-6vw] border-[#0EE80E] rounded-full border-t-transparent "
+    <motion.div 
+      className="w-[100px] h-[100px] relative top-[2vw] right-[-8vw] rounded-full border-10 border-[#363030] border-t-[#8bf335]"
+      style={{
+        filter: 'drop-shadow(0 0 8px rgba(0, 255, 0, 0.5))',
+      }}
       animate={{ rotate: 360 }}
-      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+      transition={{
+        duration: 1,
+        repeat: Infinity,
+        ease: "linear"
+      }}
     />
   );
 };
+
 
 
 const WalletConnected: React.FC = () => {
