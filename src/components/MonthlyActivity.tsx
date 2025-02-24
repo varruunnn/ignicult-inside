@@ -252,11 +252,11 @@ const MonthlyActivity: React.FC = () => {
         <div className="relative">
           <Menu />
           <header className="flex items-center justify-between px-4 py-2 pl-20">
-            <h2 className="text-2xl font-light text-white whitespace-nowrap flex max-[468px]:left-[-7vw] max-[468px]:relative max-[370px]:relative max-[370px]:left-[-8vw] max-[370px]:top-[-2vw] max-[370px]:text-lg items-center gap-2">
+            <h2 className="text-2xl max-[468px]:text-xl  text-white whitespace-nowrap flex max-[468px]:left-[-2vw] max-[468px]:relative max-[370px]:relative max-[376px]:left-[-8vw] max-[376px]:top-[-2vw] max-[376px]:text-lg items-center gap-2">
               <Calendar className="w-7 h-7" />
               Monthly Activity Dashboard
             </h2>
-            <img src="/blackLOgo.svg" alt="Logo" className="w-16 max-[370px]:left-[-50vw] max-[468px]:w-12 max-[468px]:relative max-[468px]:top-[12vw] max-[468px]:left-[-50vw] h-auto " />
+            <img src="/blackLOgo.svg" alt="Logo" className="w-16 max-[376px]:left-[-50vw] max-[468px]:w-12 max-[468px]:relative max-[468px]:top-[12vw] max-[468px]:left-[-40vw] h-auto " />
           </header>
           <div className="w-full h-px max-[468px]:mt-[70px] bg-amber-500"></div>
 
