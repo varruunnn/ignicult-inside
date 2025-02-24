@@ -109,8 +109,6 @@ const LandingPage = () => {
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa, sapiente.
           </p>
         </motion.div>
-
-        {/* Only show the button if options are not shown */}
         {!showOptions && (
           <motion.button
             variants={buttonVariants}
