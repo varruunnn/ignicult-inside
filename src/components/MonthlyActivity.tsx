@@ -212,7 +212,27 @@ const MonthlyActivity: React.FC = () => {
     { value: '12', name: 'December' },
   ];
   const years = ['2024', '2025', '2026'];
+  const renderMonth = (selectedYear: string, months: { value: string; name: string }[]) => {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; 
+    const maxAllowed = (() => {
+      if (selectedYear === '2024') return 12; 
+      if (parseInt(selectedYear) === currentYear) return currentMonth;
+      if (parseInt(selectedYear) > currentYear) return 0;
+      return 12;
+    })();
+  
+    return months.map((month) => {
+      const disabled = selectedYear === '2024' ? month.value !== '12' : parseInt(month.value) > maxAllowed;
+      return (
+        <option key={month.value} value={month.value} disabled={disabled}>
+          {month.name}
+        </option>
+      );
+    });
+  };
 
+  const avgTimePerPlayerFormat = (n: number) => n.toFixed(2);
   return (
     <motion.div
       className="min-h-screen bg-[#1D1D1D] text-white p-4 sm:p-8 overflow-x-hidden w-full"
@@ -246,13 +266,7 @@ const MonthlyActivity: React.FC = () => {
               onChange={(e) => setSelectedMonth(e.target.value)}
               className="bg-[#404040] text-white rounded p-2 text-sm"
             >
-              {months.map((month) =>
-                selectedYear === '2024' && parseInt(month.value) < 8 ? null : (
-                  <option key={month.value} value={month.value}>
-                    {month.name}
-                  </option>
-                )
-              )}
+              {renderMonth(selectedYear,months)}
             </select>
             <select
               value={selectedYear}
@@ -267,54 +281,54 @@ const MonthlyActivity: React.FC = () => {
             </select>
           </div>
           <div className="flex flex-col md:flex-row gap-6">
-          <motion.div
-                variants={chartVariants}
-                className="bg-gradient-to-tr from-[#284229] to-[#549c02d0] backdrop-blur-sm rounded-xl p-4 sm:p-8 border border-slate-700/50 w-full md:w-[70%] h-[300px] sm:h-[400px] md:h-[500px]"
-                whileHover={{ scale: 1.01 }}
-                transition={{ duration: 0.2 }}
-              >
-                <h3 className="text-2xl font-light mb-6 text-center">Daily Activity Trends</h3>
-                <ResponsiveContainer width="100%" height="80%">
-                  <LineChart data={transformedData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                    <XAxis dataKey="date" stroke="#94a3b8" tick={{ fill: '#94a3b8' }} />
-                    <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8' }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'rgba(30, 41, 59, 0.9)',
-                        border: '1px solid rgba(148, 163, 184, 0.2)',
-                        borderRadius: '8px',
-                        backdropFilter: 'blur(4px)',
-                      }}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                    <Line
-                      type="monotone"
-                      dataKey="totalMinutes"
-                      name="Total Minutes"
-                      stroke="#f87171"
-                      strokeWidth={3}
-                      dot={{ fill: '#f87171', strokeWidth: 2 }}
-                      activeDot={{ r: 8, fill: '#f87171', strokeWidth: 0 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="totalActivities"
-                      name="Total Activities"
-                      stroke="#fbbf24"
-                      strokeWidth={3}
-                      dot={{ fill: '#fbbf24', strokeWidth: 2 }}
-                      activeDot={{ r: 8, fill: '#fbbf24', strokeWidth: 0 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </motion.div>
+            <motion.div
+              variants={chartVariants}
+              className="bg-gradient-to-tr from-[#284229] to-[#549c02d0] backdrop-blur-sm rounded-xl p-4 sm:p-8 border border-slate-700/50 w-full md:w-[70%] h-[300px] sm:h-[400px] md:h-[500px]"
+              whileHover={{ scale: 1.01 }}
+              transition={{ duration: 0.2 }}
+            >
+              <h3 className="text-2xl font-light mb-6 text-center">Daily Activity Trends</h3>
+              <ResponsiveContainer width="100%" height="80%">
+                <LineChart data={transformedData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="date" stroke="#94a3b8" tick={{ fill: '#94a3b8' }} />
+                  <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8' }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                      border: '1px solid rgba(148, 163, 184, 0.2)',
+                      borderRadius: '8px',
+                      backdropFilter: 'blur(4px)',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                  <Line
+                    type="monotone"
+                    dataKey="totalMinutes"
+                    name="Total Minutes"
+                    stroke="#f87171"
+                    strokeWidth={3}
+                    dot={{ fill: '#f87171', strokeWidth: 2 }}
+                    activeDot={{ r: 8, fill: '#f87171', strokeWidth: 0 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="totalActivities"
+                    name="Total Activities"
+                    stroke="#fbbf24"
+                    strokeWidth={3}
+                    dot={{ fill: '#fbbf24', strokeWidth: 2 }}
+                    activeDot={{ r: 8, fill: '#fbbf24', strokeWidth: 0 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </motion.div>
             <motion.div
               variants={cardVariants}
               className="bg-[url('/bg0.svg')] bg-cover bg-center backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 w-full md:w-[30%] flex flex-col items-center justify-center"
               whileHover={{ scale: 1.02 }}
             >
-            <Clock className="w-9 h-9 relative top-[-2vw]" />
+              <Clock className="w-9 h-9 relative top-[-2vw]" />
               <h3 className="text-4xl font-light text-slate-100 mb-2">Total Time</h3>
               <p className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#92FF00] to-[#7aee15]">
                 <CountUp target={parseFloat(data.totalTime.split(' ')[0])} duration={2000} format={(n) => n.toFixed(2)} />
@@ -375,7 +389,7 @@ const MonthlyActivity: React.FC = () => {
               </div>
               <p className="text-3xl text-left w-full font-bold">
                 <span className="bg-gradient-to-br text-5xl from-[#92FF00] to-[#7aee15] text-transparent bg-clip-text">
-                  <CountUp target={parseFloat(data.averageTimeSpentPerPlayer)} duration={780} />
+                  <CountUp target={parseFloat(data.averageTimeSpentPerPlayer)} duration={780} format={avgTimePerPlayerFormat} />
                 </span>
                 <p className="font-light text-xl">minutes</p>
               </p>
