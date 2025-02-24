@@ -104,9 +104,9 @@ const LandingPage = () => {
           transition={{ delay: 0.3 }}
           className="text-center mb-8"
         >
-          <p className="text-gray-400 text-sm mb-1">Lorem ipsum dolor sit amet.</p>
+          <p className="text-gray-400 text-sm mb-1">"Ignicult Insights" is a dedicated platform providing real-time analytics and key performance metrics of Ignicult. Designed to attract investors, it showcases user engagement, game activity trends, and</p>
           <p className="text-gray-400 text-sm">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa, sapiente.
+          economic data, offering transparency into the platform’s growth and impact.
           </p>
         </motion.div>
         {!showOptions && (

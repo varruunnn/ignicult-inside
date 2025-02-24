@@ -252,15 +252,15 @@ const MonthlyActivity: React.FC = () => {
         <div className="relative">
           <Menu />
           <header className="flex items-center justify-between px-4 py-2 pl-20">
-            <h2 className="text-2xl font-light flex items-center gap-2">
+            <h2 className="text-2xl font-light text-white whitespace-nowrap flex max-[370px]:relative max-[370px]:left-[-8vw] max-[370px]:top-[-2vw] max-[370px]:text-lg items-center gap-2">
               <Calendar className="w-7 h-7" />
               Monthly Activity Dashboard
             </h2>
-            <img src="/blackLOgo.svg" alt="Logo" className="w-16 h-16" />
+            <img src="/blackLOgo.svg" alt="Logo" className="w-16 max-[370px]:left-[-50vw] max-[468px]:w-12 max-[468px]:relative max-[468px]:top-[12vw] max-[468px]:left-[-50vw] h-auto " />
           </header>
-          <div className="w-full h-px bg-amber-500"></div>
+          <div className="w-full h-px max-[468px]:mt-[70px] bg-amber-500"></div>
 
-          <div className="flex flex-col sm:flex-row items-start mt-[20px] w-[100%] justify-start gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row  items-start mt-[20px] w-[100%] justify-start gap-4 mb-6">
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
@@ -395,7 +395,6 @@ const MonthlyActivity: React.FC = () => {
               </p>
             </motion.div>
           </div>
-
           {/* Second Metrics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <motion.div
