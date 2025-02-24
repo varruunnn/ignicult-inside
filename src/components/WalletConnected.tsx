@@ -150,11 +150,11 @@ const WalletConnected: React.FC = () => {
       <Menu />
       <header className="w-full">
         <div className="flex items-center justify-between px-4 py-2">
-          <div className="flex relative top-[1.8vw] left-[4vw] items-center gap-2">
+          <div className="flex relative top-[1.8vw]  left-[4vw] items-center gap-2 max-[1000px]:top-[3vw] max-[1000px]:left-[15vw] max-[468px]:left-[15vw] max-[468px]:top-[5vw] ">
             <Wallet className="w-7 h-7 text-white" />
-            <h2 className="text-2xl font-light whitespace-nowrap">Wallets Connected</h2>
+            <h2 className="text-2xl font-light whitespace-nowrap ">Wallets Connected</h2>
           </div>
-          <img src="/blackLOgo.svg" alt="Logo" className="w-16 relative top-[1.5vw] h-16" />
+          <img src="/blackLOgo.svg" alt="Logo" className="w-16 max-[370px]:w-9 max-[370px]:top-[5vw] relative top-[1.5vw] h-16" />
         </div>
         <div className="w-full h-px relative top-[2.5vw] bg-amber-500" />
       </header>
