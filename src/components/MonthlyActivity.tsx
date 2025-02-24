@@ -330,7 +330,8 @@ const MonthlyActivity: React.FC = () => {
             >
               <Clock className="w-9 h-9 relative top-[-2vw]" />
               <h3 className="text-4xl font-light text-slate-100 mb-2">Total Time</h3>
-              <p className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#92FF00] to-[#7aee15]">
+              <p className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#92FF00] to-[#7aee15]  text-8xl-range"
+              >
                 <CountUp target={parseFloat(data.totalTime.split(' ')[0])} duration={2000} format={(n) => n.toFixed(2)} />
               </p>
               <p className="text-2xl font-light text-slate-100">hours</p>
