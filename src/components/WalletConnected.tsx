@@ -142,7 +142,7 @@ const WalletConnected: React.FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-[#1D1D1D] text-white"
+      className="min-h-screen bg-[#1D1D1D] text-white overflow-x-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -150,13 +150,13 @@ const WalletConnected: React.FC = () => {
       <Menu />
       <header className="w-full">
         <div className="flex items-center justify-between px-4 py-2">
-          <div className="flex relative top-[1.8vw]  left-[4vw] items-center gap-2 max-[1000px]:top-[3vw] max-[1000px]:left-[15vw] max-[468px]:left-[15vw] max-[468px]:top-[5vw] ">
+          <div className="flex relative top-[1.8vw] max-[375px]:top-[-2vw] max-[375px]:left-[22vw]  left-[4vw] items-center gap-2 max-[1000px]:top-[3vw] max-[1000px]:left-[15vw] max-[468px]:left-[15vw] max-[468px]:top-[5vw] ">
             <Wallet className="w-7 h-7 text-white" />
-            <h2 className="text-2xl font-light whitespace-nowrap ">Wallets Connected</h2>
+            <h2 className="text-2xl font-light whitespace-nowrap max-[375px]:text-lg ">Wallets Connected</h2>
           </div>
-          <img src="/blackLOgo.svg" alt="Logo" className="w-16 max-[370px]:w-9 max-[370px]:top-[5vw] relative top-[1.5vw] h-16" />
+          <img src="/blackLOgo.svg" alt="Logo" className="w-16 max-[375px]:left-[-40vw] max-[375px]:top-[12vw] max-[370px]:w-9  relative top-[1.5vw] h-16" />
         </div>
-        <div className="w-full h-px relative top-[2.5vw] bg-amber-500" />
+        <div className="w-full h-px relative top-[2.5vw] max-[375px]:mt-[30px] bg-amber-500" />
       </header>
       <div className="max-w-4xl mx-auto p-4 bg-[url('/walletss.svg')] rounded-4xl mt-[120px] bg-cover bg-center">
         {loading ? (
