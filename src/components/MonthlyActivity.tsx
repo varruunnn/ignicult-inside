@@ -252,7 +252,7 @@ const MonthlyActivity: React.FC = () => {
         <div className="relative">
           <Menu />
           <header className="flex items-center justify-between px-4 py-2 pl-20">
-            <h2 className="text-2xl font-light text-white whitespace-nowrap flex max-[370px]:relative max-[370px]:left-[-8vw] max-[370px]:top-[-2vw] max-[370px]:text-lg items-center gap-2">
+            <h2 className="text-2xl font-light text-white whitespace-nowrap flex max-[468px]:left-[-7vw] max-[468px]:relative max-[370px]:relative max-[370px]:left-[-8vw] max-[370px]:top-[-2vw] max-[370px]:text-lg items-center gap-2">
               <Calendar className="w-7 h-7" />
               Monthly Activity Dashboard
             </h2>
