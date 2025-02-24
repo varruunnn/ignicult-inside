@@ -2,6 +2,6 @@
 
 @media (min-width: 766px) and (max-width: 888px) {
     .text-8xl-range {
-      font-size: 3rem; /* equivalent to Tailwind's text-8xl */
+      font-size: 3rem;
     }
   }
