@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import LoadingScreen from './LoadingScreen'; 
 import {
   Clock,
   Users,
   Activity,
   BarChart2,
   Calendar,
-  Loader2,
   Menu as MenuIcon,
   X,
 } from 'lucide-react';
@@ -59,6 +59,7 @@ const Menu: React.FC = () => {
     { path: '/topgames', text: 'Top Games' },
     { path: '/monthly-activity', text: 'Monthly Activity' },
     { path: '/wallet-connected', text: 'Wallet Connected' },
+    { path: '/top-scorer', text: 'Top Scorers' },
   ];
 
   const fadeIn = {
@@ -242,12 +243,7 @@ const MonthlyActivity: React.FC = () => {
     >
 
       {loading ? (
-        <motion.div className="flex flex-col items-center justify-center h-96" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}>
-            <Loader2 className="w-12 h-12 text-slate-400" />
-          </motion.div>
-          <p className="mt-4 text-slate-400">Loading activity data...</p>
-        </motion.div>
+        <LoadingScreen loading={loading} />
       ) : data ? (
         <div className="relative">
           <Menu />

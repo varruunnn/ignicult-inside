@@ -5,11 +5,11 @@ import {
   ArrowUp,
   Activity,
   Award,
-  Loader2,
   Menu as MenuIcon,
   X,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen'; 
 
 interface Game {
   gameId: number;
@@ -70,7 +70,7 @@ const Menu: React.FC = () => {
                       navigate(option.path);
                       setMenuOpen(false);
                     }}
-                    className="block px-6 py-3  border-[#FFB000] border-[0.5px] cursor-pointer bg-[#1D1D1D] rounded-xl transition-colors duration-300 hover:bg-gray-800 hover:text-black text-white"
+                    className="block px-6 py-3 border-[#FFB000] border-[0.5px] cursor-pointer bg-[#1D1D1D] rounded-xl transition-colors duration-300 hover:bg-gray-800 hover:text-black text-white"
                   >
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF0000] to-[#FFF600]">
                       {option.text}
@@ -82,9 +82,9 @@ const Menu: React.FC = () => {
           </motion.nav>
         )}
       </AnimatePresence>
-    </>);
+    </>
+  );
 };
-
 
 const TopGames: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
@@ -129,13 +129,6 @@ const TopGames: React.FC = () => {
     }),
   };
 
-  const loadingVariants = {
-    animate: {
-      rotate: 360,
-      transition: { duration: 1.5, repeat: Infinity, ease: "linear" },
-    },
-  };
-
   return (
     <motion.div
       className="min-h-screen bg-[#1D1D1D] text-white p-8 relative overflow-x-hidden w-full"
@@ -145,16 +138,7 @@ const TopGames: React.FC = () => {
     >
       <Menu />
       {loading ? (
-        <motion.div
-          className="flex flex-col items-center justify-center h-screen"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <motion.div variants={loadingVariants} animate="animate">
-            <Loader2 className="w-12 h-12 text-slate-400" />
-          </motion.div>
-          <p className="mt-4 text-slate-400">Loading games data...</p>
-        </motion.div>
+        <LoadingScreen loading={loading} />
       ) : (
         <>
           <header className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between px-4 py-4">

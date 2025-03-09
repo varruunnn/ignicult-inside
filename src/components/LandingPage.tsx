@@ -136,7 +136,8 @@ const LandingPage = () => {
               {[
                 { path: "/topgames", text: "Top Games" },
                 { path: "/monthly-activity", text: "Monthly Activity" },
-                { path: "/wallet-connected", text: "Wallet Connected" }
+                { path: "/wallet-connected", text: "Wallet Connected" },
+                { path: "/top-scorer", text: "Top Scorer" },
               ].map((option, index) => (
                 <motion.div
                   key={option.path}

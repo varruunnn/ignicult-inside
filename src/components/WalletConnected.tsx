@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, Menu as MenuIcon, X, ChevronUp, Loader2 } from 'lucide-react';
+import LoadingScreen from './LoadingScreen';
+import { Wallet, Menu as MenuIcon, X, ChevronUp } from 'lucide-react';
 
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,6 +11,7 @@ const Menu: React.FC = () => {
     { path: '/topgames', text: 'Top Games' },
     { path: '/monthly-activity', text: 'Monthly Activity' },
     { path: '/wallet-connected', text: 'Wallet Connected' },
+    { path: '/top-scorer', text: 'Top Scorers' },
   ];
 
   const fadeIn = {
@@ -136,10 +138,6 @@ const WalletConnected: React.FC = () => {
     animate: { scale: [1, 1.02, 1], transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' } },
   };
 
-  const loadingVariants = {
-    animate: { rotate: 360, transition: { duration: 1.5, repeat: Infinity, ease: 'linear' } },
-  };
-
   return (
     <motion.div
       className="min-h-screen bg-[#1D1D1D] text-white overflow-x-hidden"
@@ -160,12 +158,7 @@ const WalletConnected: React.FC = () => {
       </header>
       <div className="max-w-4xl mx-auto p-4 bg-[url('/walletss.svg')] rounded-4xl mt-[120px] bg-cover bg-center">
         {loading ? (
-          <motion.div className="flex flex-col items-center justify-center h-96" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <motion.div variants={loadingVariants} animate="animate">
-              <Loader2 className="w-12 h-12 text-blue-400" />
-            </motion.div>
-            <p className="mt-4 text-slate-400">Loading wallet data...</p>
-          </motion.div>
+          <LoadingScreen loading={loading} />
         ) : walletData ? (
           <motion.div className="space-y-8">
             <motion.div
