@@ -45,7 +45,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
             transition={{ duration: 0.3 }}
             className="mt-4 text-xl font-semibold"
           >
-            Loading Game...
+            Loading.......
           </motion.p>
         </motion.div>
       )}
