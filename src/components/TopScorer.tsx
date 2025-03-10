@@ -231,9 +231,14 @@ const TopScorer: React.FC = () => {
     <div className="min-h-screen bg-[#1D1D1D] text-white p-4 flex flex-col space-y-4">
       <Menu />
       <header className="w-full flex items-center justify-between px-4 py-4">
-        <div className="flex relative left-[5vw] items-center gap-2 max-[468px]:left-[15vw]">
+        <div className="flex relative left-[5vw] items-center gap-2 max-[468px]:left-[15vw]
+        max-[362px]:relative max-[362px]:left-[9%]
+        max-[377px]:relative max-[377px]:left-[6%]
+        ">
           <img src="/hs.svg" alt="" className="w-6 h-6" />
-          <h2 className="text-xl sm:text-2xl text-white whitespace-nowrap max-[362px]:text-[17px]">
+          <h2 className="text-xl sm:text-2xl text-white whitespace-nowrap max-[362px]:text-[17px]
+          
+          ">
             Top Scorers Dashboard
           </h2>
         </div>
@@ -247,7 +252,11 @@ const TopScorer: React.FC = () => {
           <select
             value={currentIndex}
             onChange={handleSelectChange}
-            className="bg-[#404040] text-white px-1 py-1 rounded-xl outline-none"
+            className="bg-[#404040] text-white px-1 py-1 rounded-xl outline-none
+            max-[468px]:relative max-[468px]:left-[-10%]
+            max-[362px]:w-[60%]
+            max-[377px]:w-[50%] max-[377px]:relative max-[377px]:left-[0%]
+            "
           >
             {games.map((game, index) => (
               <option key={game.gameId} value={index}>

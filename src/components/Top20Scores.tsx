@@ -231,16 +231,14 @@ const Top20Scores: React.FC = () => {
             ))}
           </ul>
         </div>
-
-        {/* Right column: Stats */}
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gradient-to-r w-[111%] from-[#2f4829] via-[#455d28] to-[#536928] p-4 rounded-lg flex flex-col justify-center">
+          <div className="bg-gradient-to-r md:w-[111%] from-[#2f4829] via-[#455d28] to-[#536928] p-4 rounded-lg flex flex-col justify-center">
             <h4 className="text-3xl font-light">Top Score</h4>
             <h3 className="text-6xl font-inter font-semibold truncate tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
               {selectedPlayer.score.toLocaleString()}
             </h3>
           </div>
-          <div className="bg-gradient-to-r w-[90%] relative left-[10%] from-[#2b3463] via-[#2a3c47] to-[#284034] p-4 rounded-lg flex flex-col justify-center">
+          <div className="bg-gradient-to-r md:w-[90%] md:relative md:left-[10%] from-[#2b3463] via-[#2a3c47] to-[#284034] p-4 rounded-lg flex flex-col justify-center">
             <h4 className="text-2xl tracking-tight font-light">Score per minute</h4>
             <h3 className="text-6xl font-inter font-semibold truncate tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
               {selectedPlayer.scorePerMinute.toFixed(2)}
