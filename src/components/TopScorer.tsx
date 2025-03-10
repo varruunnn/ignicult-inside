@@ -182,9 +182,13 @@ const TopScorer: React.FC = () => {
     <div className="min-h-screen bg-[#1D1D1D] flex flex-col items-center justify-center relative">
       <Menu />
       <header className="w-full flex items-center justify-between px-4 py-4">
-        <div className="flex relative left-[5vw] items-center gap-2">
+        <div className="flex relative left-[5vw] items-center gap-2
+        max-[468px]:left-[15vw] 
+        ">
           <img src="/hs.svg" alt="" className="w-6 h-6" />
-          <h2 className="text-xl sm:text-2xl text-white whitespace-nowrap">
+          <h2 className="text-xl sm:text-2xl text-white whitespace-nowrap
+          max-[362px]:text-[17px]
+          ">
             Top Scorers Dashboard
           </h2>
         </div>
