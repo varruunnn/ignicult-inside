@@ -223,7 +223,9 @@ const TopScorer: React.FC = () => {
       />
     );
   };
-  const gameImageSrc = `/${currentGame.gameId}.svg`;
+  const gameImageSrc = `/Rectangle${currentGame.gameId}.svg`;
+  console.log(currentGame.gameId);
+
 
   return (
     <div className="min-h-screen bg-[#1D1D1D] text-white p-4 flex flex-col space-y-4">
@@ -270,7 +272,7 @@ const TopScorer: React.FC = () => {
       <div className="relative flex items-center justify-center">
         <button
           onClick={handlePrev}
-          className="absolute left-[30%] cursor-pointer z-10 text-4xl text-white hover:text-gray-300 transform -translate-y-1/2 top-1/2"
+          className="absolute left-[2%] cursor-pointer z-10 text-4xl text-white hover:text-gray-300 transform -translate-y-1/2 top-1/2"
         >
           &lsaquo;
         </button>
@@ -279,56 +281,56 @@ const TopScorer: React.FC = () => {
           <img
             src={gameImageSrc}
             alt={currentGame.gameTitle}
-            className="w-64 h-auto rounded-lg shadow-lg"
+            className="w-[97%] h-auto rounded-lg shadow-lg"
           />
         </div>
         <button
           onClick={handleNext}
-          className="absolute right-[30%] cursor-pointer z-10 text-4xl text-white hover:text-gray-300 transform -translate-y-1/2 top-1/2"
+          className="absolute right-[3%] cursor-pointer z-10 text-4xl text-white hover:text-gray-300 transform -translate-y-1/2 top-1/2"
         >
           &rsaquo;
         </button>
       </div>
-      <div className="mx-4 md:ml-[190px] md:mr-[190px] md:mx-20 space-y-4">
+      <div className="mx-4  md:h-[60vh] space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gradient-to-r md:w-[142%] from-[#264733] via-[#1d6865] to-[#264733] p-4 rounded-lg shadow">
-            <h4 className="text-sm font-light">Achieved By</h4>
-            <h3 className="text-3xl font-mono font-bold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
+          <div className="bg-gradient-to-r lg:w-[131%] md:w-[132%] md:h-[116%] from-[#264733] via-[#1d6865] to-[#264733] p-4 rounded-lg shadow">
+            <h4 className="text-sm md:text-xl md:relative md:top-[10%] md:left-[0.5%] font-light">Achieved By</h4>
+            <h3 className="text-3xl md:text-4xl md:relative md:top-[15%] font-inter font-semibold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
               {currentGame.topValidScore.achievedBy}
             </h3>
           </div>
-          <div className="bg-gradient-to-r md:w-[60%] md:relative md:left-[40%]  from-[#2f4829] via-[#455d28] to-[#536928] p-4 rounded-lg shadow flex flex-col justify-between">
+          <div className="bg-gradient-to-r md:w-[70%] md:h-[116%] md:relative md:left-[30%]  from-[#2f4829] via-[#455d28] to-[#536928] p-4 rounded-lg shadow flex flex-col justify-between">
             <div>
-              <h4 className="text-sm font-light">Top Score</h4>
-              <h3 className="text-4xl font-mono font-bold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
+              <h4 className="text-sm md:text-xl md:relative md:top-[10%] md:left-[0.5%] font-light">Top Score</h4>
+              <h3 className="text-4xl md:text-5xl md:relative md:top-[15%] font-in font-semibold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
                 <CountUp target={currentGame.topValidScore.score} />
               </h3>
             </div>
             <button
               onClick={() => setShowModal(true)}
-              className="mt-2 self-start bg-transparent cursor-pointer text-white px-1 py-1 rounded hover:bg-white hover:text-black transition-colors"
+              className="mt-2 self-end bg-transparent cursor-pointer text-white px-1 py-1 rounded hover:bg-white hover:text-black transition-colors"
             >
               More info
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <div className="bg-gradient-to-r from-[#283f35] via-[#273661] to-[#262e81] p-4 rounded-lg shadow flex flex-col justify-center">
-            <h4 className="text-sm font-light">Score per minute</h4>
-            <h3 className="text-4xl font-mono font-bold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
+        <div className="grid grid-cols-1 mt-[37px] sm:grid-cols-3 gap-3">
+          <div className="bg-gradient-to-r  md:h-[160%] from-[#283f35] via-[#273661] to-[#262e81] p-4 rounded-lg shadow flex flex-col justify-center">
+            <h4 className="text-sm md:text-xl font-light">Score per minute</h4>
+            <h3 className="text-4xl md:text-5xl font-in font-semibold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
               <CountUp target={currentGame.statistics.scorePerMinute.mean} />
             </h3>
           </div>
-          <div className="bg-gradient-to-r from-[#2b3463] via-[#2a3c47] to-[#284034] p-4 rounded-lg shadow flex flex-col justify-center">
-            <h4 className="text-sm font-light">Mean Time</h4>
-            <h3 className="text-4xl font-mono font-bold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
+          <div className="bg-gradient-to-r md:h-[160%] from-[#2b3463] via-[#2a3c47] to-[#284034] p-4 rounded-lg shadow flex flex-col justify-center">
+            <h4 className="text-sm md:text-xl font-light">Mean Time</h4>
+            <h3 className="text-4xl md:text-5xl font-in font-semibold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
               <CountUp target={currentGame.statistics.time.mean} />
             </h3>
           </div>
-          <div className="bg-gradient-to-r from-[#433d26] via-[#703421] to-[#713421] p-4 rounded-lg shadow flex flex-col justify-center">
-            <h4 className="text-sm font-light">Cultix Reward</h4>
-            <h3 className="text-4xl font-mono font-bold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
+          <div className="bg-gradient-to-r md:h-[160%] from-[#433d26] via-[#703421] to-[#713421] p-4 rounded-lg shadow flex flex-col justify-center">
+            <h4 className="text-sm md:text-xl  font-light">Cultix Reward</h4>
+            <h3 className="text-4xl md:text-5xl font-in font-semibold truncate tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
               <CountUp target={currentGame.topValidScore.cultixReward} />
             </h3>
           </div>

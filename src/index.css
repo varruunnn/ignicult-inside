@@ -1,4 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Sarpanch:wght@400;500;600;700;800;900&display=swap');
+
+
+@theme {
+  --font-inter: 'Inter', 'sans-serif';
+}
+
 @import "tailwindcss";
+
+
 
 @media (min-width: 766px) and (max-width: 888px) {
     .text-8xl-range {
