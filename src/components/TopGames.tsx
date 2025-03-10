@@ -25,6 +25,7 @@ const Menu: React.FC = () => {
     { path: '/topgames', text: 'Top Games' },
     { path: '/monthly-activity', text: 'Monthly Activity' },
     { path: '/wallet-connected', text: 'Wallet Connected' },
+    { path: '/top-scorer', text: 'Top Scorers' },
   ];
 
   const fadeIn = {
