@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Menu as MenuIcon } from "lucide-react";
+import { motion, AnimatePresence, animate, useMotionValue, useTransform } from "framer-motion";
+import { X, Menu as MenuIcon, Trophy, Clock, Award, FileCheck } from "lucide-react";
 import LoadingScreen from "./LoadingScreen";
 
 interface ScoreDetails {
@@ -12,7 +12,22 @@ interface ScoreDetails {
   achievedAt: string;
   isValidated: boolean;
   cultixReward: number;
-  validationDetails?: any;
+  validationDetails?: {
+    checks: {
+      scoreWithinRange: boolean;
+      timeWithinRange: boolean;
+      rateWithinRange: boolean;
+      scoreAchievable: boolean;
+    };
+    achievability: {
+      maxAchievableScore: number;
+      actualScore: number;
+      requiredRate: number;
+      maxReasonableRate: number;
+    };
+    explanation: string;
+    [key: string]: any;
+  };
 }
 
 interface GameStatistics {
@@ -50,6 +65,7 @@ interface ApiResponse {
   data: GameData[];
 }
 
+// Menu remains unchanged
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -92,10 +108,7 @@ const Menu: React.FC = () => {
             <motion.div {...fadeIn} className="flex flex-col items-center">
               <img src="/blackLOgo.svg" alt="Logo" className="w-24 h-24" />
             </motion.div>
-            <motion.div
-              {...fadeIn}
-              className="mt-8 flex flex-col md:flex-row gap-4"
-            >
+            <motion.div {...fadeIn} className="mt-8 flex flex-col md:flex-row gap-4">
               {menuOptions.map((option, index) => (
                 <motion.div
                   key={option.path}
@@ -126,6 +139,51 @@ const Menu: React.FC = () => {
   );
 };
 
+// Enhanced CountUp component
+const CountUp: React.FC<{ target: number; duration?: number; format?: (n: number) => string; className?: string }> = ({
+  target,
+  duration = 2,
+  format = (n) => n.toFixed(0),
+  className = "",
+}) => {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => format(latest));
+  
+  useEffect(() => {
+    const controls = animate(count, target, {
+      duration,
+      type: "spring",
+      stiffness: 50,
+      damping: 15
+    });
+    return () => controls.stop();
+  }, [target, duration, count]);
+  
+  return <motion.span className={`font-bold ${className}`}>{rounded}</motion.span>;
+};
+
+// Badge component for validation status
+const ValidationBadge: React.FC<{ isValid: boolean }> = ({ isValid }) => {
+  return (
+    <motion.span
+      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+        isValid 
+          ? "bg-gradient-to-r from-green-600 to-green-400 text-white" 
+          : "bg-gradient-to-r from-red-700 to-red-500 text-white"
+      }`}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 500,
+        damping: 15,
+      }}
+    >
+      {isValid ? "Validated" : "Not Validated"}
+    </motion.span>
+  );
+};
+
 const Top20Scores: React.FC = () => {
   const [games, setGames] = useState<GameData[]>([]);
   const [selectedGameIndex, setSelectedGameIndex] = useState<number>(0);
@@ -152,19 +210,24 @@ const Top20Scores: React.FC = () => {
   if (loading) {
     return <LoadingScreen loading={true} />;
   }
-
+  
   if (games.length === 0) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        No data available.
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-xl font-bold"
+        >
+          No data available.
+        </motion.div>
       </div>
     );
   }
 
   const currentGame = games[selectedGameIndex];
-  const sortedScores = [...(currentGame.allScores || [])].sort(
-    (a, b) => b.score - a.score
-  );
+  const sortedScores = [...(currentGame.allScores || [])].sort((a, b) => b.score - a.score);
   const top20 = sortedScores.slice(0, 20);
   const selectedPlayer = top20[selectedPlayerIndex] || top20[0];
 
@@ -172,92 +235,414 @@ const Top20Scores: React.FC = () => {
     setSelectedGameIndex(Number(e.target.value));
     setSelectedPlayerIndex(0);
   };
-
+  
   const handlePlayerClick = (index: number) => {
     setSelectedPlayerIndex(index);
   };
 
+  // Format the achievedAt date/time
+  const formatDateTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleString();
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#1D1D1D] text-white p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#1D1D1D] to-[#0D0D0D] text-white p-4">
       <Menu />
 
-      <div className="flex mt-[20px] items-center justify-between mb-4">
-        <div className="flex items-center relative left-[60px] space-x-2">
-          <label className="text-gray-300">Select Games</label>
-          <select
-            value={selectedGameIndex}
-            onChange={handleGameChange}
-            className="bg-[#404040] text-white px-2 py-1 rounded-xl outline-none"
-          >
-            {games.map((game, idx) => (
-              <option key={game.gameId} value={idx}>
-                {game.gameTitle}
-              </option>
-            ))}
-          </select>
+      {/* Top Bar with glassmorphism effect */}
+      <motion.div 
+        className="relative mx-auto max-w-6xl mt-16 mb-8"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, type: "spring" }}
+      >
+        <div className="flex flex-col sm:flex-row items-center justify-between backdrop-blur-lg bg-black/30 rounded-2xl p-4 border border-gray-800">
+          <div className="flex items-center space-x-4">
+            <motion.div
+              whileHover={{ rotate: 10 }}
+              className="hidden sm:block"
+            >
+              <Trophy className="h-8 w-8 text-yellow-500" />
+            </motion.div>
+            <div>
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-red-500">
+                Top 20 Scores
+              </h1>
+              <p className="text-gray-400">{currentGame.gameTitle}</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-3 mt-4 sm:mt-0">
+            <label className="text-gray-300 font-medium">Game:</label>
+            <motion.select
+              value={selectedGameIndex}
+              onChange={handleGameChange}
+              className="bg-gradient-to-r from-[#2A2A2A] to-[#3A3A3A] text-white px-4 py-2 rounded-xl outline-none border border-gray-700 shadow-lg"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {games.map((game, idx) => (
+                <option key={game.gameId} value={idx}>
+                  {game.gameTitle}
+                </option>
+              ))}
+            </motion.select>
+          </div>
         </div>
-        <h2 className="text-xl max-[460px]:hidden font-bold">Top 20 Scores</h2>
-      </div>
+      </motion.div>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="bg-[#2A2A2A] rounded-lg p-4 w-full md:w-1/3">
-          <h3 className="text-lg font-semibold mb-2">Achieved By</h3>
-          <ul
-            className="
-              max-h-[70vh] text-[#5F5F5F] overflow-y-auto space-y-1
-            "
-            style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFB000 #1D1D1D' }}
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Left Column: Player List */}
+        <motion.div 
+          variants={itemVariants}
+          className="lg:col-span-1"
+        >
+          <div className="bg-gradient-to-b from-[#2A2A2A] to-[#222222] rounded-2xl overflow-hidden shadow-xl border border-gray-800">
+            <div className="p-4 bg-gradient-to-r from-[#333333] to-[#2A2A2A] border-b border-gray-700">
+              <h3 className="text-lg font-bold flex items-center">
+                <Award className="w-5 h-5 mr-2 text-yellow-400" />
+                <span>Leaderboard</span>
+              </h3>
+            </div>
+            
+            <ul
+              className="max-h-[70vh] overflow-y-auto space-y-1 p-3"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFB000 #1D1D1D' }}
+            >
+              {top20.map((player, index) => (
+                <motion.li
+                  key={player.achievedBy + index}
+                  onClick={() => handlePlayerClick(index)}
+                  className={`
+                    px-4 py-3 cursor-pointer rounded-xl transition-all flex items-center
+                    ${
+                      index === selectedPlayerIndex
+                        ? "bg-gradient-to-r from-[#3D3D3D] to-[#2D2D2D] border-l-4 border-yellow-500 shadow-lg"
+                        : "hover:bg-[#2D2D2D] border-l-4 border-transparent"
+                    }
+                  `}
+                  whileHover={{ x: 5 }}
+                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                >
+                  <div className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+                    index < 3 ? 'bg-gradient-to-br from-yellow-500 to-amber-700' : 'bg-gray-700'
+                  }`}>
+                    <span className={`font-bold ${index < 3 ? 'text-black' : 'text-gray-300'}`}>{index + 1}</span>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <div className="font-medium truncate w-32">
+                      {player.achievedBy.length > 10
+                        ? player.achievedBy.slice(0, 10) + "..."
+                        : player.achievedBy}
+                    </div>
+                    <div className="text-sm text-gray-400 flex items-center mt-1">
+                      <span className="mr-2">{player.score.toLocaleString()}</span>
+                      <ValidationBadge isValid={player.isValidated} />
+                    </div>
+                  </div>
+                </motion.li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+
+        {/* Right Column: Detailed Information */}
+        <motion.div 
+          className="lg:col-span-2 space-y-6"
+          variants={containerVariants}
+        >
+          {/* Player Info */}
+          <motion.div 
+            variants={itemVariants}
+            className="bg-gradient-to-br from-[#2A2A2A] to-[#222222] p-6 rounded-2xl shadow-lg border border-gray-800"
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            {top20.map((player, index) => (
-              <li
-                key={player.achievedBy + index}
-                onClick={() => handlePlayerClick(index)}
-                className={`
-                  px-3 py-2 cursor-pointer rounded-md transition-colors
-                  ${
-                    index === selectedPlayerIndex
-                      ? "bg-[url('/highlight.svg')] bg-cover text-black"
-                      : "hover:bg-[url('/highlight.svg')] hover:bg-cover hover:text-black"
-                  }
-                `}
+            <h3 className="text-xl font-bold mb-4 flex items-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="mr-3"
               >
-                <span className="mr-2">{index + 1}.</span>
-                <span>
-                  {player.achievedBy.length > 12
-                    ? player.achievedBy.slice(0, 12) + "..."
-                    : player.achievedBy}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gradient-to-r md:w-[111%] from-[#2f4829] via-[#455d28] to-[#536928] p-4 rounded-lg flex flex-col justify-center">
-            <h4 className="text-3xl font-light">Top Score</h4>
-            <h3 className="text-6xl font-inter font-semibold truncate tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
-              {selectedPlayer.score.toLocaleString()}
+                <Trophy className="w-6 h-6 text-blue-400" />
+              </motion.div>
+              Player Information
             </h3>
-          </div>
-          <div className="bg-gradient-to-r md:w-[90%] md:relative md:left-[10%] from-[#2b3463] via-[#2a3c47] to-[#284034] p-4 rounded-lg flex flex-col justify-center">
-            <h4 className="text-2xl tracking-tight font-light">Score per minute</h4>
-            <h3 className="text-6xl font-inter font-semibold truncate tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
-              {selectedPlayer.scorePerMinute.toFixed(2)}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="bg-blue-900/30 p-2 rounded-lg">
+                    <Award className="h-5 w-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Wallet ID</p>
+                    <p className="font-mono">{selectedPlayer.achievedBy}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="bg-purple-900/30 p-2 rounded-lg">
+                    <Clock className="h-5 w-5 text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Achieved At</p>
+                    <p className="font-medium">{formatDateTime(selectedPlayer.achievedAt)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Score Information */}
+          <motion.div 
+            variants={itemVariants}
+            className="relative overflow-hidden rounded-2xl shadow-lg border border-green-800"
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            {/* Background with gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#2f4829]/90 via-[#455d28]/90 to-[#536928]/90 z-0"></div>
+            
+            {/* Animated particles effect */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+              {[...Array(20)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 rounded-full bg-white/10"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    y: [0, Math.random() * -50],
+                    opacity: [0.2, 0],
+                  }}
+                  transition={{
+                    duration: 2 + Math.random() * 2,
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+            </div>
+            
+            {/* Content */}
+            <div className="relative z-10 p-6">
+              <h3 className="text-xl font-bold mb-4 flex items-center text-white">
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="mr-3"
+                >
+                  <Trophy className="w-6 h-6 text-yellow-300" />
+                </motion.div>
+                Score Information
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
+                    <p className="text-gray-200 text-sm mb-1">Score</p>
+                    <div className="text-white text-3xl font-bold">
+                      <CountUp 
+                        target={selectedPlayer.score} 
+                        className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
+                    <p className="text-gray-200 text-sm mb-1">Time Taken</p>
+                    <div className="text-white text-2xl font-bold">
+                      <CountUp 
+                        target={selectedPlayer.timeTaken} 
+                        format={(n) => n.toFixed(2)} 
+                        className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-blue-500"
+                      />
+                      <span className="ml-1 text-blue-300 text-lg">minutes</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
+                    <p className="text-gray-200 text-sm mb-1">Score per Minute</p>
+                    <div className="text-white text-2xl font-bold">
+                      <CountUp 
+                        target={selectedPlayer.scorePerMinute} 
+                        format={(n) => n.toFixed(2)} 
+                        className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-green-500"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
+                    <p className="text-gray-200 text-sm mb-1">Cultix Reward</p>
+                    <div className="text-white text-2xl font-bold flex items-center">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        className="mr-2"
+                      >
+                        <Award className="w-5 h-5 text-yellow-300" />
+                      </motion.div>
+                      <CountUp 
+                        target={selectedPlayer.cultixReward} 
+                        className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Validation Details */}
+          <motion.div 
+            variants={itemVariants}
+            className="bg-gradient-to-br from-[#2A2A2A] to-[#222222] p-6 rounded-2xl shadow-lg border border-gray-800"
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            <h3 className="text-xl font-bold mb-4 flex items-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+              <motion.div 
+                animate={{ rotate: [0, 10, 0, -10, 0] }}
+                transition={{ duration: 5, repeat: Infinity }}
+                className="mr-3"
+              >
+                <FileCheck className="w-6 h-6 text-purple-400" />
+              </motion.div>
+              Validation Details
             </h3>
-          </div>
-          <div className="bg-gradient-to-r w-[101%] from-[#2b3463] via-[#2a3c47] to-[#284034] p-4 rounded-lg flex flex-col justify-center">
-            <h4 className="text-2xl font-light">Mean Time</h4>
-            <h3 className="text-6xl font-inter font-semibold truncate tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
-              {selectedPlayer.timeTaken.toFixed(2)}
-            </h3>
-          </div>
-          <div className="bg-gradient-to-r from-[#433d26] via-[#703421] to-[#713421] p-4 rounded-lg flex flex-col justify-center">
-            <h4 className="text-2xl font-light">Cultix Reward</h4>
-            <h3 className="text-6xl font-inter font-semibold truncate tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-[#89fc5f] to-[#edfa64]">
-              {selectedPlayer.cultixReward}
-            </h3>
-          </div>
-        </div>
-      </div>
+            
+            <div className="mb-4 flex items-center">
+              <div className={`text-lg font-bold mr-3 ${selectedPlayer.isValidated ? 'text-green-400' : 'text-red-400'}`}>
+                {selectedPlayer.isValidated ? "Validated" : "Not Validated"}
+              </div>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 15,
+                }}
+              >
+                <div className={`h-6 w-6 rounded-full flex items-center justify-center ${
+                  selectedPlayer.isValidated ? 'bg-green-500' : 'bg-red-500'
+                }`}>
+                  {selectedPlayer.isValidated ? '✓' : '✗'}
+                </div>
+              </motion.div>
+            </div>
+            
+            {selectedPlayer.validationDetails && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-4"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-[#333333] p-4 rounded-xl">
+                    <h4 className="font-semibold text-purple-300 mb-2">Checks</h4>
+                    <ul className="space-y-2">
+                      <li className="flex items-center">
+                        <div className={`h-4 w-4 rounded-full mr-2 ${
+                          selectedPlayer.validationDetails.checks.scoreWithinRange ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
+                        <span>Score Within Range</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className={`h-4 w-4 rounded-full mr-2 ${
+                          selectedPlayer.validationDetails.checks.timeWithinRange ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
+                        <span>Time Within Range</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className={`h-4 w-4 rounded-full mr-2 ${
+                          selectedPlayer.validationDetails.checks.rateWithinRange ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
+                        <span>Rate Within Range</span>
+                      </li>
+                      <li className="flex items-center">
+                        <div className={`h-4 w-4 rounded-full mr-2 ${
+                          selectedPlayer.validationDetails.checks.scoreAchievable ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
+                        <span>Score Achievable</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-[#333333] p-4 rounded-xl">
+                    <h4 className="font-semibold text-blue-300 mb-2">Achievability</h4>
+                    <ul className="space-y-2">
+                      <li className="flex justify-between">
+                        <span className="text-gray-400">Max Score:</span>
+                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.maxAchievableScore}</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span className="text-gray-400">Actual Score:</span>
+                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.actualScore}</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span className="text-gray-400">Required Rate:</span>
+                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.requiredRate}</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span className="text-gray-400">Max Rate:</span>
+                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.maxReasonableRate}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="bg-[#333333] p-4 rounded-xl mt-4">
+                  <h4 className="font-semibold text-yellow-300 mb-2">Explanation</h4>
+                  <p className="text-gray-300">{selectedPlayer.validationDetails.explanation}</p>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
