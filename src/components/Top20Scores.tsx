@@ -1,8 +1,30 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, animate, useMotionValue, useTransform } from "framer-motion";
-import { X, Menu as MenuIcon, Trophy, Clock, Award, FileCheck } from "lucide-react";
+import {
+  motion,
+  AnimatePresence,
+  animate,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
+import {
+  X,
+  Menu as MenuIcon,
+  Trophy,
+  Clock,
+  Award,
+  FileCheck,
+} from "lucide-react";
 import LoadingScreen from "./LoadingScreen";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface ScoreDetails {
   score: number;
@@ -65,7 +87,6 @@ interface ApiResponse {
   data: GameData[];
 }
 
-// Menu remains unchanged
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -108,7 +129,10 @@ const Menu: React.FC = () => {
             <motion.div {...fadeIn} className="flex flex-col items-center">
               <img src="/blackLOgo.svg" alt="Logo" className="w-24 h-24" />
             </motion.div>
-            <motion.div {...fadeIn} className="mt-8 flex flex-col md:flex-row gap-4">
+            <motion.div
+              {...fadeIn}
+              className="mt-8 flex flex-col md:flex-row gap-4"
+            >
               {menuOptions.map((option, index) => (
                 <motion.div
                   key={option.path}
@@ -138,9 +162,12 @@ const Menu: React.FC = () => {
     </>
   );
 };
-
-// Enhanced CountUp component
-const CountUp: React.FC<{ target: number; duration?: number; format?: (n: number) => string; className?: string }> = ({
+const CountUp: React.FC<{
+  target: number;
+  duration?: number;
+  format?: (n: number) => string;
+  className?: string;
+}> = ({
   target,
   duration = 2,
   format = (n) => n.toFixed(0),
@@ -148,27 +175,28 @@ const CountUp: React.FC<{ target: number; duration?: number; format?: (n: number
 }) => {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => format(latest));
-  
+
   useEffect(() => {
     const controls = animate(count, target, {
       duration,
       type: "spring",
       stiffness: 50,
-      damping: 15
+      damping: 15,
     });
     return () => controls.stop();
   }, [target, duration, count]);
-  
-  return <motion.span className={`font-bold ${className}`}>{rounded}</motion.span>;
+
+  return (
+    <motion.span className={`font-bold ${className}`}>{rounded}</motion.span>
+  );
 };
 
-// Badge component for validation status
 const ValidationBadge: React.FC<{ isValid: boolean }> = ({ isValid }) => {
   return (
     <motion.span
       className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-        isValid 
-          ? "bg-gradient-to-r from-green-600 to-green-400 text-white" 
+        isValid
+          ? "bg-gradient-to-r from-green-600 to-green-400 text-white"
           : "bg-gradient-to-r from-red-700 to-red-500 text-white"
       }`}
       initial={{ scale: 0 }}
@@ -182,6 +210,22 @@ const ValidationBadge: React.FC<{ isValid: boolean }> = ({ isValid }) => {
       {isValid ? "Validated" : "Not Validated"}
     </motion.span>
   );
+};
+const CustomGraphDot = (props: any) => {
+  const { cx, cy, value, max } = props;
+  if (value === max) {
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={6}
+        fill="#FFB000"
+        stroke="white"
+        strokeWidth={2}
+      />
+    );
+  }
+  return <circle cx={cx} cy={cy} r={3} fill="#FFB000" />;
 };
 
 const Top20Scores: React.FC = () => {
@@ -210,7 +254,7 @@ const Top20Scores: React.FC = () => {
   if (loading) {
     return <LoadingScreen loading={true} />;
   }
-  
+
   if (games.length === 0) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -227,23 +271,20 @@ const Top20Scores: React.FC = () => {
   }
 
   const currentGame = games[selectedGameIndex];
-  const sortedScores = [...(currentGame.allScores || [])].sort((a, b) => b.score - a.score);
+  const sortedScores = [...(currentGame.allScores || [])].sort(
+    (a, b) => b.score - a.score
+  );
   const top20 = sortedScores.slice(0, 20);
   const selectedPlayer = top20[selectedPlayerIndex] || top20[0];
+  const maxGraphScore = Math.max(...top20.map((p) => p.score));
 
   const handleGameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedGameIndex(Number(e.target.value));
     setSelectedPlayerIndex(0);
   };
-  
+
   const handlePlayerClick = (index: number) => {
     setSelectedPlayerIndex(index);
-  };
-
-  // Format the achievedAt date/time
-  const formatDateTime = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleString();
   };
 
   const containerVariants = {
@@ -251,9 +292,9 @@ const Top20Scores: React.FC = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -264,28 +305,37 @@ const Top20Scores: React.FC = () => {
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 15
-      }
-    }
+        damping: 15,
+      },
+    },
+  };
+  const formatDateTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleString();
+  };
+
+  const formatDate = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1D1D1D] to-[#0D0D0D] text-white p-4">
       <Menu />
+      <img src="/blackLOgo.svg" alt="Logo" className="w-12 h-12 relative right-[-95%]" />
 
-      {/* Top Bar with glassmorphism effect */}
-      <motion.div 
-        className="relative mx-auto max-w-6xl mt-16 mb-8"
+      <motion.div
+        className="relative mx-auto max-w-6xl mt-10 mb-8"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, type: "spring" }}
       >
         <div className="flex flex-col sm:flex-row items-center justify-between backdrop-blur-lg bg-black/30 rounded-2xl p-4 border border-gray-800">
           <div className="flex items-center space-x-4">
-            <motion.div
-              whileHover={{ rotate: 10 }}
-              className="hidden sm:block"
-            >
+            <motion.div whileHover={{ rotate: 10 }} className="hidden sm:block">
               <Trophy className="h-8 w-8 text-yellow-500" />
             </motion.div>
             <div>
@@ -295,15 +345,15 @@ const Top20Scores: React.FC = () => {
               <p className="text-gray-400">{currentGame.gameTitle}</p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3 mt-4 sm:mt-0">
             <label className="text-gray-300 font-medium">Game:</label>
             <motion.select
               value={selectedGameIndex}
               onChange={handleGameChange}
-              className="bg-gradient-to-r from-[#2A2A2A] to-[#3A3A3A] text-white px-4 py-2 rounded-xl outline-none border border-gray-700 shadow-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="w-64 cursor-pointer bg-[#2A2A2A] text-white px-4 py-2 rounded-xl outline-none border border-gray-700 shadow-lg bg-[url('/arrow-down.svg')] bg-no-repeat bg-right bg-opacity-50"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               {games.map((game, idx) => (
                 <option key={game.gameId} value={idx}>
@@ -315,17 +365,13 @@ const Top20Scores: React.FC = () => {
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Left Column: Player List */}
-        <motion.div 
-          variants={itemVariants}
-          className="lg:col-span-1"
-        >
+        <motion.div variants={itemVariants} className="lg:col-span-1">
           <div className="bg-gradient-to-b from-[#2A2A2A] to-[#222222] rounded-2xl overflow-hidden shadow-xl border border-gray-800">
             <div className="p-4 bg-gradient-to-r from-[#333333] to-[#2A2A2A] border-b border-gray-700">
               <h3 className="text-lg font-bold flex items-center">
@@ -333,10 +379,13 @@ const Top20Scores: React.FC = () => {
                 <span>Leaderboard</span>
               </h3>
             </div>
-            
+
             <ul
               className="max-h-[70vh] overflow-y-auto space-y-1 p-3"
-              style={{ scrollbarWidth: 'thin', scrollbarColor: '#FFB000 #1D1D1D' }}
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#FFB000 #1D1D1D",
+              }}
             >
               {top20.map((player, index) => (
                 <motion.li
@@ -356,12 +405,22 @@ const Top20Scores: React.FC = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.03 }}
                 >
-                  <div className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
-                    index < 3 ? 'bg-gradient-to-br from-yellow-500 to-amber-700' : 'bg-gray-700'
-                  }`}>
-                    <span className={`font-bold ${index < 3 ? 'text-black' : 'text-gray-300'}`}>{index + 1}</span>
+                  <div
+                    className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+                      index < 3
+                        ? "bg-gradient-to-br from-yellow-500 to-amber-700"
+                        : "bg-gray-700"
+                    }`}
+                  >
+                    <span
+                      className={`font-bold ${
+                        index < 3 ? "text-black" : "text-gray-300"
+                      }`}
+                    >
+                      {index + 1}
+                    </span>
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="font-medium truncate w-32">
                       {player.achievedBy.length > 10
@@ -369,7 +428,9 @@ const Top20Scores: React.FC = () => {
                         : player.achievedBy}
                     </div>
                     <div className="text-sm text-gray-400 flex items-center mt-1">
-                      <span className="mr-2">{player.score.toLocaleString()}</span>
+                      <span className="mr-2">
+                        {player.score.toLocaleString()}
+                      </span>
                       <ValidationBadge isValid={player.isValidated} />
                     </div>
                   </div>
@@ -377,22 +438,57 @@ const Top20Scores: React.FC = () => {
               ))}
             </ul>
           </div>
+          <motion.div
+            className="max-w-6xl mx-auto mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3 className="text-2xl font-bold mb-4">Score History (Top 20)</h3>
+            <div className="bg-[#2A2A2A] p-4 rounded-2xl shadow-lg">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={top20}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#555" />
+                  <XAxis
+                    dataKey="achievedAt"
+                    tickFormatter={formatDate}
+                    stroke="#fff"
+                  />
+                  <YAxis stroke="#fff" />
+                  <Tooltip
+                    labelFormatter={(label) => `Date: ${formatDate(label)}`}
+                    formatter={(value, name) => [
+                      value,
+                      name === "score" ? "Score" : name,
+                    ]}
+                    contentStyle={{ backgroundColor: "#333", border: "none" }}
+                    itemStyle={{ color: "#fff" }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="score"
+                    stroke="#FFB000"
+                    strokeWidth={2}
+                    dot={<CustomGraphDot max={maxGraphScore} />}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
         </motion.div>
 
-        {/* Right Column: Detailed Information */}
-        <motion.div 
+        <motion.div
           className="lg:col-span-2 space-y-6"
           variants={containerVariants}
         >
-          {/* Player Info */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="bg-gradient-to-br from-[#2A2A2A] to-[#222222] p-6 rounded-2xl shadow-lg border border-gray-800"
             whileHover={{ y: -5 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
             <h3 className="text-xl font-bold mb-4 flex items-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
-              <motion.div 
+              <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="mr-3"
@@ -401,7 +497,7 @@ const Top20Scores: React.FC = () => {
               </motion.div>
               Player Information
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
@@ -414,7 +510,7 @@ const Top20Scores: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <div className="bg-purple-900/30 p-2 rounded-lg">
@@ -422,24 +518,23 @@ const Top20Scores: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Achieved At</p>
-                    <p className="font-medium">{formatDateTime(selectedPlayer.achievedAt)}</p>
+                    <p className="font-medium">
+                      {formatDateTime(selectedPlayer.achievedAt)}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Score Information */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="relative overflow-hidden rounded-2xl shadow-lg border border-green-800"
             whileHover={{ y: -5 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            {/* Background with gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#2f4829]/90 via-[#455d28]/90 to-[#536928]/90 z-0"></div>
-            
-            {/* Animated particles effect */}
+
             <div className="absolute inset-0 z-0 overflow-hidden">
               {[...Array(20)].map((_, i) => (
                 <motion.div
@@ -462,11 +557,10 @@ const Top20Scores: React.FC = () => {
                 />
               ))}
             </div>
-            
-            {/* Content */}
+
             <div className="relative z-10 p-6">
               <h3 className="text-xl font-bold mb-4 flex items-center text-white">
-                <motion.div 
+                <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                   className="mr-3"
@@ -475,56 +569,64 @@ const Top20Scores: React.FC = () => {
                 </motion.div>
                 Score Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
                   <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
                     <p className="text-gray-200 text-sm mb-1">Score</p>
                     <div className="text-white text-3xl font-bold">
-                      <CountUp 
-                        target={selectedPlayer.score} 
+                      <CountUp
+                        target={selectedPlayer.score}
                         className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
                     <p className="text-gray-200 text-sm mb-1">Time Taken</p>
                     <div className="text-white text-2xl font-bold">
-                      <CountUp 
-                        target={selectedPlayer.timeTaken} 
-                        format={(n) => n.toFixed(2)} 
+                      <CountUp
+                        target={selectedPlayer.timeTaken}
+                        format={(n) => n.toFixed(2)}
                         className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-blue-500"
                       />
-                      <span className="ml-1 text-blue-300 text-lg">minutes</span>
+                      <span className="ml-1 text-blue-300 text-lg">
+                        minutes
+                      </span>
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
-                    <p className="text-gray-200 text-sm mb-1">Score per Minute</p>
+                    <p className="text-gray-200 text-sm mb-1">
+                      Score per Minute
+                    </p>
                     <div className="text-white text-2xl font-bold">
-                      <CountUp 
-                        target={selectedPlayer.scorePerMinute} 
-                        format={(n) => n.toFixed(2)} 
+                      <CountUp
+                        target={selectedPlayer.scorePerMinute}
+                        format={(n) => n.toFixed(2)}
                         className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-green-500"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="bg-black/20 backdrop-blur-sm p-4 rounded-xl">
                     <p className="text-gray-200 text-sm mb-1">Cultix Reward</p>
                     <div className="text-white text-2xl font-bold flex items-center">
                       <motion.div
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        transition={{
+                          duration: 10,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
                         className="mr-2"
                       >
                         <Award className="w-5 h-5 text-yellow-300" />
                       </motion.div>
-                      <CountUp 
-                        target={selectedPlayer.cultixReward} 
+                      <CountUp
+                        target={selectedPlayer.cultixReward}
                         className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500"
                       />
                     </div>
@@ -534,15 +636,14 @@ const Top20Scores: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Validation Details */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="bg-gradient-to-br from-[#2A2A2A] to-[#222222] p-6 rounded-2xl shadow-lg border border-gray-800"
             whileHover={{ y: -5 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
             <h3 className="text-xl font-bold mb-4 flex items-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
-              <motion.div 
+              <motion.div
                 animate={{ rotate: [0, 10, 0, -10, 0] }}
                 transition={{ duration: 5, repeat: Infinity }}
                 className="mr-3"
@@ -551,9 +652,13 @@ const Top20Scores: React.FC = () => {
               </motion.div>
               Validation Details
             </h3>
-            
+
             <div className="mb-4 flex items-center">
-              <div className={`text-lg font-bold mr-3 ${selectedPlayer.isValidated ? 'text-green-400' : 'text-red-400'}`}>
+              <div
+                className={`text-lg font-bold mr-3 ${
+                  selectedPlayer.isValidated ? "text-green-400" : "text-red-400"
+                }`}
+              >
                 {selectedPlayer.isValidated ? "Validated" : "Not Validated"}
               </div>
               <motion.div
@@ -565,78 +670,128 @@ const Top20Scores: React.FC = () => {
                   damping: 15,
                 }}
               >
-                <div className={`h-6 w-6 rounded-full flex items-center justify-center ${
-                  selectedPlayer.isValidated ? 'bg-green-500' : 'bg-red-500'
-                }`}>
-                  {selectedPlayer.isValidated ? '✓' : '✗'}
+                <div
+                  className={`h-6 w-6 rounded-full flex items-center justify-center ${
+                    selectedPlayer.isValidated ? "bg-green-500" : "bg-red-500"
+                  }`}
+                >
+                  {selectedPlayer.isValidated ? "✓" : "✗"}
                 </div>
               </motion.div>
             </div>
-            
+
             {selectedPlayer.validationDetails && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
+                animate={{ height: "auto", opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 className="space-y-4"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-[#333333] p-4 rounded-xl">
-                    <h4 className="font-semibold text-purple-300 mb-2">Checks</h4>
+                    <h4 className="font-semibold text-purple-300 mb-2">
+                      Checks
+                    </h4>
                     <ul className="space-y-2">
                       <li className="flex items-center">
-                        <div className={`h-4 w-4 rounded-full mr-2 ${
-                          selectedPlayer.validationDetails.checks.scoreWithinRange ? 'bg-green-500' : 'bg-red-500'
-                        }`} />
+                        <div
+                          className={`h-4 w-4 rounded-full mr-2 ${
+                            selectedPlayer.validationDetails.checks
+                              .scoreWithinRange
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                          }`}
+                        />
                         <span>Score Within Range</span>
                       </li>
                       <li className="flex items-center">
-                        <div className={`h-4 w-4 rounded-full mr-2 ${
-                          selectedPlayer.validationDetails.checks.timeWithinRange ? 'bg-green-500' : 'bg-red-500'
-                        }`} />
+                        <div
+                          className={`h-4 w-4 rounded-full mr-2 ${
+                            selectedPlayer.validationDetails.checks
+                              .timeWithinRange
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                          }`}
+                        />
                         <span>Time Within Range</span>
                       </li>
                       <li className="flex items-center">
-                        <div className={`h-4 w-4 rounded-full mr-2 ${
-                          selectedPlayer.validationDetails.checks.rateWithinRange ? 'bg-green-500' : 'bg-red-500'
-                        }`} />
+                        <div
+                          className={`h-4 w-4 rounded-full mr-2 ${
+                            selectedPlayer.validationDetails.checks
+                              .rateWithinRange
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                          }`}
+                        />
                         <span>Rate Within Range</span>
                       </li>
                       <li className="flex items-center">
-                        <div className={`h-4 w-4 rounded-full mr-2 ${
-                          selectedPlayer.validationDetails.checks.scoreAchievable ? 'bg-green-500' : 'bg-red-500'
-                        }`} />
+                        <div
+                          className={`h-4 w-4 rounded-full mr-2 ${
+                            selectedPlayer.validationDetails.checks
+                              .scoreAchievable
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                          }`}
+                        />
                         <span>Score Achievable</span>
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div className="bg-[#333333] p-4 rounded-xl">
-                    <h4 className="font-semibold text-blue-300 mb-2">Achievability</h4>
+                    <h4 className="font-semibold text-blue-300 mb-2">
+                      Achievability
+                    </h4>
                     <ul className="space-y-2">
                       <li className="flex justify-between">
                         <span className="text-gray-400">Max Score:</span>
-                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.maxAchievableScore}</span>
+                        <span className="font-mono">
+                          {
+                            selectedPlayer.validationDetails.achievability
+                              .maxAchievableScore
+                          }
+                        </span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-gray-400">Actual Score:</span>
-                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.actualScore}</span>
+                        <span className="font-mono">
+                          {
+                            selectedPlayer.validationDetails.achievability
+                              .actualScore
+                          }
+                        </span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-gray-400">Required Rate:</span>
-                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.requiredRate}</span>
+                        <span className="font-mono">
+                          {
+                            selectedPlayer.validationDetails.achievability
+                              .requiredRate
+                          }
+                        </span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-gray-400">Max Rate:</span>
-                        <span className="font-mono">{selectedPlayer.validationDetails.achievability.maxReasonableRate}</span>
+                        <span className="font-mono">
+                          {
+                            selectedPlayer.validationDetails.achievability
+                              .maxReasonableRate
+                          }
+                        </span>
                       </li>
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="bg-[#333333] p-4 rounded-xl mt-4">
-                  <h4 className="font-semibold text-yellow-300 mb-2">Explanation</h4>
-                  <p className="text-gray-300">{selectedPlayer.validationDetails.explanation}</p>
+                  <h4 className="font-semibold text-yellow-300 mb-2">
+                    Explanation
+                  </h4>
+                  <p className="text-gray-300">
+                    {selectedPlayer.validationDetails.explanation}
+                  </p>
                 </div>
               </motion.div>
             )}
