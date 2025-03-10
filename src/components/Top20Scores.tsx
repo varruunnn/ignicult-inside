@@ -227,6 +227,20 @@ const CustomGraphDot = (props: any) => {
   }
   return <circle cx={cx} cy={cy} r={3} fill="#FFB000" />;
 };
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#333] p-2 rounded-lg text-white text-sm">
+        <p className="font-semibold">Percentile: {label.toFixed(0)}%</p>
+        <p>
+          Date: {new Date(payload[0].payload.achievedAt).toLocaleDateString()}
+        </p>
+        <p>Score: {payload[0].value}</p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const Top20Scores: React.FC = () => {
   const [games, setGames] = useState<GameData[]>([]);
@@ -314,18 +328,14 @@ const Top20Scores: React.FC = () => {
     return date.toLocaleString();
   };
 
-  const formatDate = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1D1D1D] to-[#0D0D0D] text-white p-4">
       <Menu />
-      <img src="/blackLOgo.svg" alt="Logo" className="w-12 h-12 relative right-[-95%]" />
+      <img
+        src="/blackLOgo.svg"
+        alt="Logo"
+        className="w-12 h-12 relative right-[-95%]"
+      />
 
       <motion.div
         className="relative mx-auto max-w-6xl mt-10 mb-8"
@@ -439,31 +449,47 @@ const Top20Scores: React.FC = () => {
             </ul>
           </div>
           <motion.div
-            className="max-w-6xl mx-auto mt-8"
+            className="max-w-6xl mx-auto mt-10"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h3 className="text-2xl font-bold mb-4">Score History (Top 20)</h3>
+            <h3 className="text-2xl font-bold mb-4">
+              Score History (Percentile)
+            </h3>
             <div className="bg-[#2A2A2A] p-4 rounded-2xl shadow-lg">
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={top20}>
+                <LineChart
+                  data={top20.map((player, index, arr) => ({
+                    ...player,
+                    percentile: 100 - (index / (arr.length - 1)) * 100,
+                  }))}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#555" />
                   <XAxis
-                    dataKey="achievedAt"
-                    tickFormatter={formatDate}
+                    dataKey="percentile"
+                    reversed
+                    tickFormatter={(val: number) => `${val.toFixed(0)}%`}
                     stroke="#fff"
+                    label={{
+                      value: "Percentile",
+                      position: "insideBottom",
+                      offset: -5,
+                      fill: "#fff",
+                      fontSize: 14,
+                    }}
                   />
-                  <YAxis stroke="#fff" />
-                  <Tooltip
-                    labelFormatter={(label) => `Date: ${formatDate(label)}`}
-                    formatter={(value, name) => [
-                      value,
-                      name === "score" ? "Score" : name,
-                    ]}
-                    contentStyle={{ backgroundColor: "#333", border: "none" }}
-                    itemStyle={{ color: "#fff" }}
+                  <YAxis
+                    stroke="#fff"
+                    label={{
+                      value: "Score",
+                      angle: -90,
+                      position: "insideLeft",
+                      fill: "#fff",
+                      fontSize: 14,
+                    }}
                   />
+                  <Tooltip content={<CustomTooltip />} />
                   <Line
                     type="monotone"
                     dataKey="score"
