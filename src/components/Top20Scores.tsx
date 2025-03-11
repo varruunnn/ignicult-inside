@@ -107,7 +107,7 @@ const Menu: React.FC = () => {
     <>
       <motion.button
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="fixed top-7 left-4 z-50 p-3 rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
+        className="fixed top-7 left-4 z-50 p-3  rounded-full cursor-pointer hover:bg-slate-700 transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -126,8 +126,10 @@ const Menu: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.div {...fadeIn} className="flex flex-col items-center">
-              <img src="/blackLOgo.svg" alt="Logo" className="w-24 h-24" />
+            <motion.div {...fadeIn} className="flex flex-col items-center
+            ">
+              <img src="/blackLOgo.svg" alt="Logo" className="w-24 h-24
+              " />
             </motion.div>
             <motion.div
               {...fadeIn}
@@ -334,7 +336,9 @@ const Top20Scores: React.FC = () => {
       <img
         src="/blackLOgo.svg"
         alt="Logo"
-        className="w-12 h-12 relative right-[-95%]"
+        className="w-12 h-12 relative right-[-95%]
+        max-[468px]:right-[-86%]
+        "
       />
 
       <motion.div
@@ -531,13 +535,13 @@ const Top20Scores: React.FC = () => {
                     <Award className="h-5 w-5 text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm">Wallet ID</p>
-                    <p className="font-mono">{selectedPlayer.achievedBy}</p>
+                    <p className="text-gray-400 ">Wallet ID</p>
+                    <p className="font-mono text-white tracking-tight text-sm">{selectedPlayer.achievedBy}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 md:ml-[30px] max-[1555px]:ml-[50px]">
                 <div className="flex items-center space-x-2">
                   <div className="bg-purple-900/30 p-2 rounded-lg">
                     <Clock className="h-5 w-5 text-purple-400" />
