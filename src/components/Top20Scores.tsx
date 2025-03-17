@@ -86,6 +86,78 @@ interface ApiResponse {
   message: string;
   data: GameData[];
 }
+const ExplanationDetails: React.FC<{ explanation: any }> = ({
+  explanation,
+}) => {
+  const { main, context, criteria, detailedAnalysis, confidence } = explanation;
+
+  return (
+    <div className="bg-[#333333] p-4 rounded-xl mt-4 shadow-lg">
+      <h4 className="font-semibold text-yellow-300 mb-3">Explanation</h4>
+
+      <div className="space-y-2 text-gray-300">
+        <div>
+          <strong>Main:</strong> {main}
+        </div>
+        <div>
+          <strong>Context:</strong> {context}
+        </div>
+        <div>
+          <strong>Criteria:</strong> {criteria}
+        </div>
+      </div>
+
+      <div className="mt-4 border-t border-gray-600 pt-3">
+        <h5 className="font-semibold text-blue-300 mb-2">Detailed Analysis</h5>
+        <div className="space-y-1 text-gray-300">
+          <div>
+            <strong className="text-red-300">Score Level:</strong>{" "}
+            {detailedAnalysis.scoreLevel}
+          </div>
+          <div>
+            <strong>Consistency:</strong> {detailedAnalysis.consistency}
+          </div>
+          <div>
+            <strong>Neural Network Confidence:</strong>{" "}
+            {detailedAnalysis.neuralNetworkConfidence}%
+          </div>
+          <div>
+            <strong>Time Efficiency:</strong>{" "}
+            {detailedAnalysis.timeEfficiency.status} (Value:{" "}
+            {detailedAnalysis.timeEfficiency.value}, Mean:{" "}
+            {detailedAnalysis.timeEfficiency.meanTime})
+          </div>
+          <div>
+            <strong>Scoring Rate Efficiency:</strong>{" "}
+            {detailedAnalysis.scoringRateEfficiency.status} (Value:{" "}
+            {detailedAnalysis.scoringRateEfficiency.value}, Mean:{" "}
+            {detailedAnalysis.scoringRateEfficiency.meanRate})
+          </div>
+          <div>
+            <strong>Statistical Significance:</strong>{" "}
+            {detailedAnalysis.statisticalSignificance.standardDeviations} SD
+            (Actual: {detailedAnalysis.statisticalSignificance.actualScore},
+            Mean: {detailedAnalysis.statisticalSignificance.meanScore})
+          </div>
+          <div>
+            <strong>Percentile Rank:</strong>{" "}
+            {detailedAnalysis.percentileRank.value}% of{" "}
+            {detailedAnalysis.percentileRank.totalScores}
+          </div>
+          <div>
+            <strong>Validation Metrics:</strong> Checks Passed:{" "}
+            {detailedAnalysis.validationMetrics.checksPassedCount} /{" "}
+            {detailedAnalysis.validationMetrics.totalChecks} (Pass Rate:{" "}
+            {detailedAnalysis.validationMetrics.passRate}%)
+          </div>
+          <div>
+            <strong>Confidence:</strong> {confidence}%
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -126,10 +198,17 @@ const Menu: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.div {...fadeIn} className="flex flex-col items-center
-            ">
-              <img src="/blackLOgo.svg" alt="Logo" className="w-24 h-24
-              " />
+            <motion.div
+              {...fadeIn}
+              className="flex flex-col items-center
+            "
+            >
+              <img
+                src="/blackLOgo.svg"
+                alt="Logo"
+                className="w-24 h-24
+              "
+              />
             </motion.div>
             <motion.div
               {...fadeIn}
@@ -253,7 +332,9 @@ const Top20Scores: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("https://ignicult.com/api/topScores/top-scores");
+        const res = await fetch(
+          "https://ignicult.com/api/topScores/top-scores"
+        );
         const json: ApiResponse = await res.json();
         if (json && json.data) {
           setGames(json.data);
@@ -536,7 +617,9 @@ const Top20Scores: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-gray-400 ">Wallet ID</p>
-                    <p className="font-mono text-white tracking-tight text-sm">{selectedPlayer.achievedBy}</p>
+                    <p className="font-mono text-white tracking-tight text-sm">
+                      {selectedPlayer.achievedBy}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -816,12 +899,25 @@ const Top20Scores: React.FC = () => {
                 </div>
 
                 <div className="bg-[#333333] p-4 rounded-xl mt-4">
-                  <h4 className="font-semibold text-yellow-300 mb-2">
+                  {/* <h4 className="font-semibold text-yellow-300 mb-2">
                     Explanation
                   </h4>
                   <p className="text-gray-300">
-                    {selectedPlayer.validationDetails.explanation}
+                    {selectedPlayer.validationDetails.explanation.main}
+                    {selectedPlayer.validationDetails.explanation.context}
+                    {selectedPlayer.validationDetails.explanation.criteria}
                   </p>
+                  <p className="text-red-300">
+                    Score Level: {selectedPlayer.validationDetails.explanation.detailedAnalysis.scoreLevel}
+                  </p> */}
+                  {selectedPlayer.validationDetails &&
+                    selectedPlayer.validationDetails.explanation && (
+                      <ExplanationDetails
+                        explanation={
+                          selectedPlayer.validationDetails.explanation
+                        }
+                      />
+                    )}
                 </div>
               </motion.div>
             )}
