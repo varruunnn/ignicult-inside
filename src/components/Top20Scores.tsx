@@ -253,7 +253,7 @@ const Top20Scores: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("https://ignicult.com/api/activity/top-scores");
+        const res = await fetch("https://ignicult.com/api/topScores/top-scores");
         const json: ApiResponse = await res.json();
         if (json && json.data) {
           setGames(json.data);
